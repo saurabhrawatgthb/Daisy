@@ -1,0 +1,58 @@
+﻿
+> temp_daisy@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+node.exe : ⚠ The "middleware" 
+file convention is deprecated. 
+Please use "proxy" instead. Learn 
+more: https://nextjs.org/docs/mess
+ages/middleware-to-proxy
+At C:\Program 
+Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : Not 
+   Specified: (⚠ The "middlewa..  
+  .leware-to-proxy:String) [],    
+ RemoteException
+    + FullyQualifiedErrorId : Nat 
+   iveCommandError
+ 
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.6s
+  Running TypeScript ...
+Failed to compile.
+
+./src/lib/db.ts:8:3
+Type error: Object literal may 
+only specify known properties, 
+and 'datasources' does not exist 
+in type 
+'Subset<PrismaClientOptions, 
+PrismaClientOptions>'.
+
+[0m [90m  6 |[39m
+ [90m  7 |[39m [36mexport[39m 
+[36mconst[39m prisma 
+[33m=[39m 
+globalForPrisma[33m.[39mprisma 
+[33m?[39m[33m?[39m 
+[36mnew[39m 
+[33mPrismaClient[39m({
+[31m[1m>[22m[39m[90m  8 
+|[39m   datasources[33m:[39m {
+ [90m    |[39m   
+[31m[1m^[22m[39m
+ [90m  9 |[39m     
+db[33m:[39m {
+ [90m 10 |[39m       
+url[33m:[39m process[33m.[39me
+nv[33m.[39m[33mDATABASE_URL[39
+m [33m||[39m 
+[32m"file:./dev.db"[39m
+ [90m 11 |[39m     }[0m
+Next.js build worker exited with 
+code: 1 and signal: null

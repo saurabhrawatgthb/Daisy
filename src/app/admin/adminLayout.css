@@ -1,0 +1,106 @@
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 260px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+}
+
+.admin-brand {
+  padding: 30px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-brand h2 {
+  color: var(--primary-dark);
+  font-size: 1.8rem;
+}
+
+.admin-nav {
+  padding: 20px 0;
+  flex: 1;
+}
+
+.nav-link {
+  display: block;
+  padding: 15px 30px;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: var(--bg-color);
+  color: var(--primary-dark);
+  border-left: 4px solid var(--primary);
+}
+
+.admin-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.logout-btn {
+  width: 100%;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.logout-btn:hover {
+  background: #fff;
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: 260px;
+  background: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-topbar {
+  height: 80px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
+  box-shadow: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.admin-content {
+  padding: 40px;
+  flex: 1;
+  overflow-y: auto;
+}
