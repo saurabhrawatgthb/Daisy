@@ -49,8 +49,8 @@ export default function AddProduct() {
 
       router.push('/admin/products')
       router.refresh()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to create product')
       setLoading(false)
     }
   }

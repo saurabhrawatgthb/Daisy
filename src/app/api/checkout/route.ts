@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       amount: order.amount,
       dbOrderId: dbOrder.id
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Payment initiation failed' }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Payment initiation failed' }, { status: 500 })
   }
 }

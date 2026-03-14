@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     const uploadDir = join(process.cwd(), 'public/uploads')
     try {
       await mkdir(uploadDir, { recursive: true })
-    } catch(e) {}
+    } catch {}
 
     const uniqueId = Date.now() + '-' + Math.round(Math.random() * 1e9)
     const filename = `${uniqueId}-${file.name.replace(/\s+/g, '-')}`
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     await writeFile(path, buffer)
 
     return NextResponse.json({ url: `/uploads/${filename}`, success: true })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Upload failed' }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Upload failed' }, { status: 500 })
   }
 }

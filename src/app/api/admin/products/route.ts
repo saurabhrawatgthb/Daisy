@@ -8,7 +8,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     })
     return NextResponse.json({ products })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
   }
 }
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ product, success: true }, { status: 201 })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Failed to create product' }, { status: 500 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to create product' }, { status: 500 })
   }
 }

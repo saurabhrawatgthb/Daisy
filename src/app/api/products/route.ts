@@ -8,7 +8,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     })
     return NextResponse.json({ products })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
   }
 }

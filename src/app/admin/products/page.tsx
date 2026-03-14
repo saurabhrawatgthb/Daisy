@@ -1,10 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import { Product } from '@prisma/client'
 import Link from 'next/link'
 import '../dashboard.css'
 
 export default function AdminProducts() {
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
   const fetchProducts = async () => {
@@ -27,7 +28,7 @@ export default function AdminProducts() {
     if (!confirm('Are you sure you want to delete this product?')) return
     try {
       await fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
-      setProducts(products.filter((p: any) => p.id !== id))
+      setProducts(products.filter((p) => p.id !== id))
     } catch (e) {
       console.error(e)
     }
@@ -57,7 +58,7 @@ export default function AdminProducts() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product: any) => (
+              {products.map((product) => (
                 <tr key={product.id}>
                   <td>
                     {product.imageUrl ? (

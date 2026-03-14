@@ -1,9 +1,10 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import { Order } from '@prisma/client'
 import '../dashboard.css'
 
 export default function AdminOrders() {
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((o: any) => (
+              {orders.map((o) => (
                 <tr key={o.id}>
                   <td>{o.id.slice(0,8)}</td>
                   <td><strong>{o.customerName}</strong></td>

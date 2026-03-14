@@ -6,19 +6,32 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import '../store.css'
 
+type CartItem = {
+  productId: string
+  quantity: number
+  title: string
+  price: number
+  imageUrl?: string
+}
+
 export default function Cart() {
-  const [cart, setCart] = useState<any[]>([])
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      return JSON.parse(localStorage.getItem('daisy_cart') || '[]')
+    }
+    return []
+  })
   const [mounted, setMounted] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    setCart(JSON.parse(localStorage.getItem('daisy_cart') || '[]'))
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
 
   const updateQuantity = (id: string, delta: number) => {
     const newCart = [...cart]
-    const item = newCart.find((i: any) => i.productId === id)
+    const item = newCart.find((i) => i.productId === id)
     if (item) {
       item.quantity += delta
       if (item.quantity <= 0) {
@@ -34,7 +47,7 @@ export default function Cart() {
     router.push('/checkout')
   }
 
-  const total = cart.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0)
+  const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)
 
   if (!mounted) return null
 
@@ -53,7 +66,7 @@ export default function Cart() {
             </div>
           ) : (
             <div className="glass-card" style={{ padding: '0 30px' }}>
-              {cart.map((item: any) => (
+              {cart.map((item) => (
                 <div key={item.productId} style={{ display: 'flex', alignItems: 'center', gap: '25px', padding: '30px 0', borderBottom: '1px solid var(--border)' }}>
                   <img src={item.imageUrl} alt={item.title} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '12px' }} />
                   <div style={{ flex: 1 }}>

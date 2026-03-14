@@ -9,7 +9,7 @@ export async function GET() {
       include: { orderItems: true }
     })
     return NextResponse.json({ orders })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
   }
 }
