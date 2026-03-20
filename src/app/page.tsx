@@ -5,13 +5,18 @@ import Link from 'next/link'
 import { prisma } from '@/lib/db'
 import './store.css'
 
-export const revalidate = 60; // Revalidate every minute for fast updates
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const featuredProducts = await prisma.product.findMany({
-    take: 4,
-    orderBy: { createdAt: 'desc' }
-  })
+  let featuredProducts: any[] = []
+  try {
+    featuredProducts = await prisma.product.findMany({
+      take: 4,
+      orderBy: { createdAt: 'desc' }
+    })
+  } catch {
+    // DB unavailable — render page with empty products
+  }
 
   return (
     <>

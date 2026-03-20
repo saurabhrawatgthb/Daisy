@@ -10,10 +10,16 @@ export default async function Shop({ searchParams }: { searchParams: Promise<{ c
   const { category } = await searchParams;
   
   const where = category ? { category } : {}
-  const products = await prisma.product.findMany({
-    where,
-    orderBy: { createdAt: 'desc' }
-  })
+  let products: any[] = []
+  try {
+    products = await prisma.product.findMany({
+      where,
+      orderBy: { createdAt: 'desc' }
+    })
+  } catch {
+    // DB unavailable — render page with empty products
+  }
+
 
   return (
     <>
