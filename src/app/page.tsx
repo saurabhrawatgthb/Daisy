@@ -49,7 +49,7 @@ export default async function Home() {
             <Link href="/shop?category=Scrunchies" className="category-card">
               <div className="category-image placeholder-image scrunchie"></div>
               <div className="category-info">
-                <h3>Silk Scrunchies</h3>
+                <h3>Scrunchies</h3>
                 <span className="shop-link">Explore &rarr;</span>
               </div>
             </Link>
