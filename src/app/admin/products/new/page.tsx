@@ -12,7 +12,7 @@ export default function AddProduct() {
   const [price, setPrice] = useState('')
   const [category, setCategory] = useState('Jewellery')
   const [description, setDescription] = useState('')
-  const [file, setFile] = useState<File | null>(null)
+  const [files, setFiles] = useState<File[]>([])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,25 +20,32 @@ export default function AddProduct() {
     setError('')
 
     try {
-      let imageUrl = ''
+      let mainImageUrl = ''
+      let additionalImages: string[] = []
 
-      if (file) {
-        const formData = new FormData()
-        formData.append('file', file)
-        const uploadRes = await fetch('/api/admin/upload', {
-          method: 'POST',
-          body: formData
+      if (files.length > 0) {
+        const uploadPromises = files.map(async (f) => {
+          const formData = new FormData()
+          formData.append('file', f)
+          const uploadRes = await fetch('/api/admin/upload', {
+            method: 'POST',
+            body: formData
+          })
+          const uploadData = await uploadRes.json()
+          if (!uploadRes.ok) throw new Error(uploadData.error || 'Image upload failed')
+          return uploadData.url
         })
-        const uploadData = await uploadRes.json()
-        if (!uploadRes.ok) throw new Error(uploadData.error || 'Image upload failed')
-        imageUrl = uploadData.url
+        
+        const uploadedUrls = await Promise.all(uploadPromises)
+        mainImageUrl = uploadedUrls[0]
+        additionalImages = uploadedUrls.slice(1)
       }
 
       const productRes = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title, price, category, description, imageUrl
+          title, price, category, description, imageUrl: mainImageUrl, additionalImages
         })
       })
 
@@ -62,13 +69,19 @@ export default function AddProduct() {
       <div className="glass-card" style={{ padding: '30px' }}>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
-            <label className="input-label">Product Image</label>
+            <label className="input-label">Product Images (First is cover)</label>
             <input 
               type="file" 
               accept="image/*"
+              multiple
               className="input-field"
-              onChange={e => setFile(e.target.files?.[0] || null)}
+              onChange={e => {
+                if (e.target.files) {
+                  setFiles(Array.from(e.target.files))
+                }
+              }}
             />
+            {files.length > 0 && <small style={{ color: 'var(--success)' }}>{files.length} file(s) selected</small>}
           </div>
 
           <div className="input-group">

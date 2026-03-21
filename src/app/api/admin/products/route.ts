@@ -16,7 +16,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json()
-    const { title, description, price, category, imageUrl } = data
+    const { title, description, price, category, imageUrl, additionalImages } = data
 
     if (!title || !price || !category) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -28,7 +28,8 @@ export async function POST(request: Request) {
         description: description || '',
         price: parseFloat(price),
         category,
-        imageUrl: imageUrl || ''
+        imageUrl: imageUrl || '',
+        additionalImages: additionalImages || []
       }
     })
 

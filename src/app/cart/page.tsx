@@ -67,18 +67,18 @@ export default function Cart() {
           ) : (
             <div className="glass-card" style={{ padding: '0 30px' }}>
               {cart.map((item) => (
-                <div key={item.productId} style={{ display: 'flex', alignItems: 'center', gap: '25px', padding: '30px 0', borderBottom: '1px solid var(--border)' }}>
-                  <img src={item.imageUrl} alt={item.title} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '12px' }} />
-                  <div style={{ flex: 1 }}>
+                <div key={item.productId} style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '30px 0', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
+                  <img src={item.imageUrl} alt={item.title} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '12px', flexShrink: 0 }} />
+                  <div style={{ flex: '1 1 150px', minWidth: '150px' }}>
                     <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>{item.title}</h3>
                     <p style={{ color: 'var(--primary-dark)', fontWeight: 600, fontSize: '1.1rem' }}>₹{item.price}</p>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px', border: '1px solid var(--border)', borderRadius: '30px', padding: '5px 15px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '15px', border: '1px solid var(--border)', borderRadius: '30px', padding: '5px 15px', flexShrink: 0 }}>
                     <button onClick={() => updateQuantity(item.productId, -1)} style={{ background: 'transparent', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: 'var(--text-muted)' }}>-</button>
                     <span style={{ fontWeight: 600, width: '20px', textAlign: 'center' }}>{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.productId, 1)} style={{ background: 'transparent', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: 'var(--text-main)' }}>+</button>
                   </div>
-                  <p style={{ fontWeight: 600, fontSize: '1.1rem', width: '80px', textAlign: 'right' }}>₹{item.price * item.quantity}</p>
+                  <p style={{ fontWeight: 600, fontSize: '1.1rem', minWidth: '80px', textAlign: 'right', flexShrink: 0 }}>₹{item.price * item.quantity}</p>
                 </div>
               ))}
             </div>
