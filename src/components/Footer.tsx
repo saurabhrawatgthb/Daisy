@@ -6,8 +6,8 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="container footer-inner">
         <div className="footer-brand">
-          <h2>Daisy</h2>
-          <p>Premium anti-tarnish jewellery and elegant accessories for women.</p>
+          <h2 style={{ textAlign: 'center' }}>Daisy</h2>
+          <p style={{ textAlign: 'center' }}>Premium anti-tarnish jewellery and elegant accessories for women.</p>
         </div>
         <div className="footer-links">
           <h3>Shop</h3>
@@ -17,9 +17,10 @@ export default function Footer() {
         </div>
         <div className="footer-links">
           <h3>Help</h3>
-          <Link href="#">Contact Us</Link>
-          <Link href="#">Shipping Policy</Link>
-          <Link href="#">Returns</Link>
+          <Link href="/my-orders">My Orders</Link>
+          <Link href="/track">Track Order</Link>
+          <Link href="/contact">Contact Us</Link>
+          <Link href="/shipping-policy">Shipping Policy</Link>
         </div>
       </div>
       <div className="footer-bottom">
