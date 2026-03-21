@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import Link from 'next/link'
 
 export default function AddToCartButton({ product }: { product: any }) {
   const [added, setAdded] = useState(false)
@@ -25,17 +26,28 @@ export default function AddToCartButton({ product }: { product: any }) {
     // Dispatch event to update Header cart count
     window.dispatchEvent(new Event('cartUpdated'))
     
+    
     setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
   }
 
   return (
-    <button 
-      onClick={handleAddToCart} 
-      className="btn" 
-      style={{ width: '100%', padding: '20px', fontSize: '1.2rem', fontWeight: 600, letterSpacing: '1px' }}
-    >
-      {added ? '✓ Added to Cart!' : 'Add to Cart'}
-    </button>
+    <div style={{ display: 'flex', gap: '15px' }}>
+      <button 
+        onClick={handleAddToCart} 
+        className={added ? "btn-outline" : "btn"} 
+        style={{ flex: 1, padding: '20px', fontSize: '1.2rem', fontWeight: 600, letterSpacing: '1px' }}
+      >
+        {added ? '✓ Added' : 'Add to Cart'}
+      </button>
+      {added && (
+        <Link 
+          href="/cart" 
+          className="btn" 
+          style={{ flex: 1, padding: '20px', fontSize: '1.2rem', fontWeight: 600, letterSpacing: '1px', textAlign: 'center', background: '#27ae60' }}
+        >
+          Go to Cart 🛒
+        </Link>
+      )}
+    </div>
   )
 }

@@ -57,7 +57,7 @@ export default function Cart() {
       <div className="page-header" style={{ padding: '40px 20px' }}>
         <h1>Your Shopping Cart</h1>
       </div>
-      <main className="main-content container" style={{ padding: '60px 20px', display: 'flex', gap: '40px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+      <main className="main-content container" style={{ padding: '60px 20px', display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <div style={{ flex: '2 1 600px' }}>
           {cart.length === 0 ? (
             <div className="empty-state glass-card" style={{ padding: '60px', textAlign: 'center' }}>
@@ -94,10 +94,10 @@ export default function Cart() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
               <span style={{ color: 'var(--text-muted)' }}>Shipping</span>
-              <span style={{ color: 'var(--success)', fontWeight: 600 }}>Free</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Calculated at checkout</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '20px', marginBottom: '30px', fontSize: '1.3rem' }}>
-              <span style={{ fontWeight: 600 }}>Total</span>
+              <span style={{ fontWeight: 600 }}>Subtotal</span>
               <span style={{ fontWeight: 700, color: 'var(--primary-dark)' }}>₹{total}</span>
             </div>
             <button onClick={handleCheckout} className="btn" style={{ width: '100%', fontSize: '1.1rem', padding: '16px' }}>Proceed to Checkout</button>
