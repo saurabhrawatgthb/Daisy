@@ -66,7 +66,7 @@ export default async function Home() {
     <>
       <Header />
       <main className="main-content">
-        
+
         {/* Elegant Hero Section */}
         <section className="hero-section">
           <div className="hero-content">
@@ -79,12 +79,40 @@ export default async function Home() {
           <div className="hero-overlay"></div>
         </section>
 
+        {/* Categories Showcase */}
+        <section className="categories-section container">
+          <h2 className="section-title">Shop by Category</h2>
+          <div className="category-grid">
+            <Link href="/shop?category=Jewellery" className="category-card">
+              <div className="category-image placeholder-image jewellry"></div>
+              <div className="category-info">
+                <h3>Anti-tarnish Jewellery</h3>
+                <span className="shop-link">Explore &rarr;</span>
+              </div>
+            </Link>
+            <Link href="/shop?category=Scrunchies" className="category-card">
+              <div className="category-image placeholder-image scrunchie"></div>
+              <div className="category-info">
+                <h3>Scrunchies</h3>
+                <span className="shop-link">Explore &rarr;</span>
+              </div>
+            </Link>
+            <Link href="/shop?category=Claws" className="category-card">
+              <div className="category-image placeholder-image decor"></div>
+              <div className="category-info">
+                <h3>Hair Claws</h3>
+                <span className="shop-link">Explore &rarr;</span>
+              </div>
+            </Link>
+          </div>
+        </section>
+
         {/* Featured Products */}
         <section className="featured-section container">
           <h2 className="section-title">New Arrivals</h2>
           {renderProductGrid(featuredProducts, 'More products coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-             <Link href="/shop" className="btn-outline">View All Accessories</Link>
+            <Link href="/shop" className="btn-outline">View All Accessories</Link>
           </div>
         </section>
 
@@ -92,15 +120,15 @@ export default async function Home() {
           <h2 className="section-title">Premium Jewellery</h2>
           {renderProductGrid(jewelleryProducts, 'New jewellery coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-             <Link href="/shop?category=Jewellery" className="btn-outline">Shop Jewellery</Link>
+            <Link href="/shop?category=Jewellery" className="btn-outline">Shop Jewellery</Link>
           </div>
         </section>
 
         <section className="featured-section container">
-          <h2 className="section-title">Silk Scrunchies</h2>
+          <h2 className="section-title">Scrunchies</h2>
           {renderProductGrid(scrunchiesProducts, 'New scrunchies coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-             <Link href="/shop?category=Scrunchies" className="btn-outline">Shop Scrunchies</Link>
+            <Link href="/shop?category=Scrunchies" className="btn-outline">Shop Scrunchies</Link>
           </div>
         </section>
 
@@ -108,7 +136,7 @@ export default async function Home() {
           <h2 className="section-title">Hair Claws</h2>
           {renderProductGrid(clawsProducts, 'New hair claws coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-             <Link href="/shop?category=Hair Claws" className="btn-outline">Shop Hair Claws</Link>
+            <Link href="/shop?category=Hair Claws" className="btn-outline">Shop Hair Claws</Link>
           </div>
         </section>
 
