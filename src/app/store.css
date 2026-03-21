@@ -376,6 +376,10 @@
 
   /* Checkout — stack columns */
   .main-content { flex-direction: column !important; }
+
+  /* Product detail layout */
+  .product-detail-grid { grid-template-columns: 1fr !important; gap: 30px !important; }
+  .product-image-large { height: 400px !important; }
 }
 
 /* =====================
@@ -389,4 +393,8 @@
   .product-image { height: 170px; }
   .logo { font-size: 1.6rem; }
   .container { padding: 0 14px; }
+  
+  .product-image-large { height: 300px !important; }
+  .product-header-title { font-size: 2rem !important; }
+  .product-header-price { font-size: 2rem !important; }
 }

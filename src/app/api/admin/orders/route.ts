@@ -19,7 +19,7 @@ export async function GET() {
 export async function PATCH(request: Request) {
   try {
     const { orderId, status } = await request.json()
-    const allowed = ['Pending', 'Payment Submitted', 'Paid', 'Rejected', 'Shipped']
+    const allowed = ['Pending', 'Payment Submitted', 'Paid', 'Rejected', 'Shipped', 'Delivered']
     if (!orderId || !allowed.includes(status)) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
     }

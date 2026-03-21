@@ -6,6 +6,8 @@ type Order = {
   id: string
   customerName: string
   customerEmail: string
+  customerPhone: string
+  customerPincode: string
   customerAddress: string
   totalAmount: number
   status: string
@@ -19,6 +21,7 @@ const STATUS_COLORS: Record<string, string> = {
   'Paid': '#27ae60',
   'Rejected': '#e74c3c',
   'Shipped': '#2980b9',
+  'Delivered': '#2ecc71',
 }
 
 export default function AdminOrders() {
@@ -94,6 +97,8 @@ export default function AdminOrders() {
                     <strong>{o.customerName}</strong>
                     <br />
                     <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>{o.customerEmail}</span>
+                    <br />
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>{o.customerPhone} (PIN: {o.customerPincode})</span>
                   </td>
                   <td style={{ fontWeight: 600 }}>₹{o.totalAmount}</td>
                   <td style={{ fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
@@ -145,6 +150,16 @@ export default function AdminOrders() {
                           onClick={() => updateStatus(o.id, 'Shipped')}
                         >
                           📦 Mark Shipped
+                        </button>
+                      )}
+                      {o.status === 'Shipped' && (
+                        <button
+                          className="btn"
+                          style={{ padding: '6px 14px', fontSize: '0.82rem', background: '#2ecc71' }}
+                          disabled={updating === o.id}
+                          onClick={() => updateStatus(o.id, 'Delivered')}
+                        >
+                          🎉 Mark Delivered
                         </button>
                       )}
                     </div>

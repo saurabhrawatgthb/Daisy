@@ -31,9 +31,11 @@ model Order {
   id              String   @id @default(cuid())
   customerName    String
   customerEmail   String
+  customerPhone   String
+  customerPincode String
   customerAddress String
   totalAmount     Float
-  status          String   @default("Pending") // Pending, Paid, Shipped
+  status          String   @default("Pending") // Pending, Paid, Shipped, Delivered
   paymentIntentId String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

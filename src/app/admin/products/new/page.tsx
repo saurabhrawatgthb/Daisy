@@ -103,6 +103,7 @@ export default function AddProduct() {
             >
               <option value="Jewellery">Jewellery</option>
               <option value="Scrunchies">Scrunchies</option>
+              <option value="Hair Claws">Hair Claws</option>
               <option value="Decor">Decor</option>
               <option value="Other">Other</option>
             </select>

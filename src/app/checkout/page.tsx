@@ -17,7 +17,7 @@ export default function Checkout() {
   const [utrError, setUtrError] = useState('')
   const router = useRouter()
 
-  const [formData, setFormData] = useState({ name: '', email: '', address: '' })
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', pincode: '', address: '' })
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('daisy_cart') || '[]'))
@@ -138,6 +138,18 @@ export default function Checkout() {
                   <label className="input-label">Email Address</label>
                   <input required type="email" className="input-field" value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })} />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  <div className="input-group">
+                    <label className="input-label">Phone Number</label>
+                    <input required type="tel" className="input-field" value={formData.phone}
+                      onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                  </div>
+                  <div className="input-group">
+                    <label className="input-label">Pincode</label>
+                    <input required type="text" className="input-field" value={formData.pincode}
+                      onChange={e => setFormData({ ...formData, pincode: e.target.value })} />
+                  </div>
                 </div>
                 <div className="input-group">
                   <label className="input-label">Full Shipping Address</label>
