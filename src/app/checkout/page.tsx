@@ -24,7 +24,12 @@ export default function Checkout() {
     setMounted(true)
   }, [])
 
-  const total = cart.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0)
+  const subtotal = cart.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0)
+  
+  // Shipping calculation
+  const isDehradun = formData.address.toLowerCase().includes('dehradun')
+  const shippingFee = (subtotal === 0 || isDehradun) ? 0 : 30
+  const total = subtotal + shippingFee
 
   // Step 1: Save order to DB → move to QR payment step
   const handlePlaceOrder = async (e: React.FormEvent) => {
@@ -227,7 +232,24 @@ export default function Checkout() {
               </div>
             ))}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '20px', marginBottom: '28px', fontSize: '1.3rem' }}>
+          
+          <div style={{ paddingBottom: '15px', borderBottom: '1px solid var(--border)', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '1rem', color: 'var(--text-muted)' }}>
+              <span>Subtotal</span>
+              <span>₹{subtotal}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem', color: isDehradun ? 'var(--success)' : 'var(--text-muted)' }}>
+              <span>Shipping {isDehradun && '(Dehradun)'}</span>
+              <span>{isDehradun ? 'Free' : `₹${shippingFee}`}</span>
+            </div>
+            {!isDehradun && formData.address.length > 0 && (
+               <p style={{ fontSize: '0.8rem', color: 'var(--primary-dark)', marginTop: '8px', textAlign: 'right' }}>
+                 Free deliveries across Dehradun!
+               </p>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '28px', fontSize: '1.3rem' }}>
             <span style={{ fontWeight: 600 }}>Total</span>
             <span style={{ fontWeight: 700, color: 'var(--primary-dark)' }}>₹{total}</span>
           </div>

@@ -31,6 +31,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid products in cart' }, { status: 400 })
     }
 
+    // Shipping calculation
+    const isDehradun = customerDetails.address.toLowerCase().includes('dehradun')
+    const finalAmount = totalAmount + (isDehradun ? 0 : 30)
+
     // Save order with Pending status (no payment gateway needed)
     const dbOrder = await prisma.order.create({
       data: {
@@ -39,7 +43,7 @@ export async function POST(request: Request) {
         customerPhone: customerDetails.phone,
         customerPincode: customerDetails.pincode,
         customerAddress: customerDetails.address,
-        totalAmount,
+        totalAmount: finalAmount,
         status: 'Pending',
         orderItems: { create: orderItemsData }
       }
@@ -63,7 +67,7 @@ export async function POST(request: Request) {
           html: `
             <h2>Thank you for your order, ${customerDetails.name}!</h2>
             <p>Your order (<strong>#${dbOrder.id.slice(0, 8).toUpperCase()}</strong>) has been placed successfully.</p>
-            <p><strong>Total Amount:</strong> ₹${totalAmount}</p>
+            <p><strong>Total Amount:</strong> ₹${finalAmount}</p>
             <p>Please complete your UPI payment to confirm the order.</p>
             <p>You can track your order status anytime at <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/track">our tracking page</a>.</p>
             <br/>
@@ -81,7 +85,7 @@ export async function POST(request: Request) {
       console.warn('SMTP_EMAIL and SMTP_PASSWORD not set in .env. Skipping email notification.');
     }
 
-    return NextResponse.json({ dbOrderId: dbOrder.id, totalAmount })
+    return NextResponse.json({ dbOrderId: dbOrder.id, totalAmount: finalAmount })
   } catch (error: unknown) {
     return NextResponse.json({
       error: error instanceof Error ? error.message : 'Order creation failed'

@@ -8,6 +8,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const router = useRouter()
   const [pendingCount, setPendingCount] = useState(0)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Poll for new/pending orders every 30 seconds
   useEffect(() => {
@@ -37,11 +38,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="admin-container">
-      <aside className="admin-sidebar glass-card">
-        <div className="admin-brand">
+      {mobileMenuOpen && (
+        <div 
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 90 }} 
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+      <aside className={`admin-sidebar glass-card ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+        <div className="admin-brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2>Daisy Admin</h2>
+          <button className="admin-hamburger" style={{ display: 'none' }} onClick={() => setMobileMenuOpen(false)}>×</button>
         </div>
-        <nav className="admin-nav">
+        <nav className="admin-nav" onClick={() => setMobileMenuOpen(false)}>
           <Link href="/admin" className={`nav-link ${pathname === '/admin' ? 'active' : ''}`}>
             📊 Dashboard
           </Link>
@@ -75,7 +83,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <main className="admin-main">
         <header className="admin-topbar">
-          <h3>Welcome back, Daisy 👋</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <button className="admin-hamburger" style={{ display: 'none' }} onClick={() => setMobileMenuOpen(true)}>☰</button>
+            <h3>Welcome back, Daisy 👋</h3>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {pendingCount > 0 && (
               <Link href="/admin/orders" style={{

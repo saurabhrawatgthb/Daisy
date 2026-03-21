@@ -104,3 +104,52 @@
   flex: 1;
   overflow-y: auto;
 }
+
+/* =========================================
+   MOBILE RESPONSIVENESS for ADMIN
+   ========================================= */
+
+@media (max-width: 900px) {
+  /* Sidebar acts like a drawer */
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+  }
+
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  /* Hamburger menu button */
+  .admin-hamburger {
+    display: flex !important;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-main);
+  }
+
+  .admin-topbar {
+    padding: 0 20px;
+    height: 70px;
+  }
+
+  .admin-topbar h3 {
+    display: none; /* Hide welcome text on small screens */
+  }
+
+  .admin-content {
+    padding: 20px;
+  }
+}
+
+/* Ensure tables do not break layout */
+.daisy-table {
+  min-width: 700px; /* Forces scroll if container is smaller */
+}

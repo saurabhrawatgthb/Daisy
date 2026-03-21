@@ -42,7 +42,7 @@ export default async function Shop({ searchParams }: { searchParams: Promise<{ c
                 <Link href="/shop?category=Jewellery" style={{ fontWeight: category === 'Jewellery' ? 600 : 400, color: category === 'Jewellery' ? 'var(--primary-dark)' : 'var(--text-main)', display: 'block' }}>Anti-tarnish Jewellery</Link>
               </li>
               <li style={{ marginBottom: '15px' }}>
-                <Link href="/shop?category=Scrunchies" style={{ fontWeight: category === 'Scrunchies' ? 600 : 400, color: category === 'Scrunchies' ? 'var(--primary-dark)' : 'var(--text-main)', display: 'block' }}>Silk Scrunchies</Link>
+                <Link href="/shop?category=Scrunchies" style={{ fontWeight: category === 'Scrunchies' ? 600 : 400, color: category === 'Scrunchies' ? 'var(--primary-dark)' : 'var(--text-main)', display: 'block' }}>Scrunchies</Link>
               </li>
               <li>
                 <Link href="/shop?category=Claws" style={{ fontWeight: category === 'Claws' ? 600 : 400, color: category === 'Claws' ? 'var(--primary-dark)' : 'var(--text-main)', display: 'block' }}>Hair Claws</Link>

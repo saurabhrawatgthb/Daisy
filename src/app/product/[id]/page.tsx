@@ -79,6 +79,7 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
             <div style={{ marginTop: '30px', padding: '15px', background: '#f8f9fa', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid #e9ecef' }}>
               <p><strong>Arrives:</strong> Generally in 3-5 business days.</p>
               <p style={{ marginTop: '5px', color: '#007185', fontWeight: 500 }}>In stock and ready to pack.</p>
+              <p style={{ marginTop: '5px', color: 'var(--success)', fontWeight: 600 }}>🎊 Free delivery across Dehradun!</p>
             </div>
           </div>
 
