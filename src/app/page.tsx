@@ -79,6 +79,18 @@ export default async function Home() {
           <div className="hero-overlay"></div>
         </section>
 
+        <div className="quick-links-bar container" style={{ marginTop: '-25px', marginBottom: '40px', display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', position: 'relative', zIndex: 10 }}>
+          <a href="#sec-jewellery" className="quick-link-btn" style={{ background: '#fff', padding: '10px 20px', borderRadius: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', transition: 'transform 0.3s' }}>
+            <span style={{ fontSize: '1.2rem' }}>💎</span> Jewellery
+          </a>
+          <a href="#sec-scrunchies" className="quick-link-btn" style={{ background: '#fff', padding: '10px 20px', borderRadius: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', transition: 'transform 0.3s' }}>
+            <span style={{ fontSize: '1.2rem' }}>🎀</span> Scrunchies
+          </a>
+          <a href="#sec-claws" className="quick-link-btn" style={{ background: '#fff', padding: '10px 20px', borderRadius: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', transition: 'transform 0.3s' }}>
+            <span style={{ fontSize: '1.2rem' }}>🌸</span> Claws
+          </a>
+        </div>
+
         {/* Categories Showcase */}
         <section className="categories-section container">
           <h2 className="section-title">Shop by Category</h2>
@@ -116,7 +128,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="featured-section container">
+        <section id="sec-jewellery" className="featured-section container" style={{ scrollMarginTop: '100px' }}>
           <h2 className="section-title">Premium Jewellery</h2>
           {renderProductGrid(jewelleryProducts, 'New jewellery coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
@@ -124,7 +136,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="featured-section container">
+        <section id="sec-scrunchies" className="featured-section container" style={{ scrollMarginTop: '100px' }}>
           <h2 className="section-title">Scrunchies</h2>
           {renderProductGrid(scrunchiesProducts, 'New scrunchies coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
@@ -132,7 +144,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="featured-section container">
+        <section id="sec-claws" className="featured-section container" style={{ scrollMarginTop: '100px' }}>
           <h2 className="section-title">Hair Claws</h2>
           {renderProductGrid(clawsProducts, 'New hair claws coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>

@@ -87,11 +87,9 @@
   font-size: 3rem;
   margin-bottom: 20px;
   color: var(--text-main);
-  line-height: 1.1;
+  line-height: 1.2;
   text-shadow: 0 4px 15px rgba(255,255,255,0.8);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-wrap: balance;
 }
 
 .hero-subtitle {
@@ -167,14 +165,23 @@
   font-size: 0.9rem;
 }
 
-/* Product Grid */
+/* Product Grid - Horizontal Scroll Slider */
 .product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 30px;
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px 0 30px; /* Give room for shadow */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+}
+.product-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .product-card {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
@@ -364,9 +371,9 @@
   .categories-section, .featured-section { padding: 25px 16px; }
   .section-title { font-size: 1.6rem; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* Grids — go single column */
+  /* Grids */
   .category-grid { grid-template-columns: 1fr; gap: 15px; }
-  .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+  .product-card { flex: 0 0 220px; }
 
   /* Product card image smaller on mobile */
   .product-image { height: 200px; }
