@@ -28,6 +28,15 @@ body {
   line-height: 1.6;
 }
 
+@keyframes pageLoad {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.main-content, .dashboard-wrapper, main {
+  animation: pageLoad 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 600;
@@ -56,14 +65,20 @@ a {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 4px 10px rgba(248, 200, 220, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active {
+  transform: scale(0.96);
 }
 
 .btn:hover:not(:disabled) {
   background-color: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(248, 200, 220, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 18px rgba(248, 200, 220, 0.45);
 }
 
 .btn:disabled {
