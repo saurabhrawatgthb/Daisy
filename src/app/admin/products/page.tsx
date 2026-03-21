@@ -36,12 +36,12 @@ export default function AdminProducts() {
 
   return (
     <div className="dashboard-wrapper">
-      <div className="section-header">
+      <div className="section-header" style={{ flexWrap: 'wrap', gap: '15px' }}>
         <h1 className="page-title">Products Inventory</h1>
         <Link href="/admin/products/new" className="btn">Add New Product</Link>
       </div>
 
-      <div className="glass-card" style={{ padding: '30px' }}>
+      <div className="glass-card" style={{ padding: '30px', overflowX: 'auto' }}>
         {loading ? (
           <p className="empty-state">Loading products...</p>
         ) : products.length === 0 ? (
