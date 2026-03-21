@@ -2,12 +2,12 @@ import React from 'react';
 
 export default function SocialIcons() {
   return (
-    <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
+    <div style={{ position: 'fixed', bottom: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: '16px', zIndex: 50 }}>
       <a
         href="https://wa.me/+919286749037" // Replace with actual WhatsApp number
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-[#25D366] text-white p-3 rounded-full shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300 flex items-center justify-center animate-bounce"
+        style={{ animationDuration: '3s', background: '#25D366', color: 'white', padding: '12px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.25)', transition: 'transform 0.3s' }}
         aria-label="Chat with us on WhatsApp"
         style={{ animationDuration: '3s' }}
       >
@@ -26,9 +26,8 @@ export default function SocialIcons() {
         href="https://instagram.com/the_daisy_" // Replace with actual Instagram link
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white p-3 rounded-full shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300 flex items-center justify-center animate-bounce"
+        style={{ animationDuration: '3s', animationDelay: '1.5s', background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: 'white', padding: '12px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.25)', transition: 'transform 0.3s' }}
         aria-label="Follow us on Instagram"
-        style={{ animationDuration: '3s', animationDelay: '1.5s' }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

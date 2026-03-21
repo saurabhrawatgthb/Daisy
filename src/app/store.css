@@ -84,11 +84,14 @@
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: 3rem;
   margin-bottom: 20px;
   color: var(--text-main);
   line-height: 1.1;
   text-shadow: 0 4px 15px rgba(255,255,255,0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hero-subtitle {
@@ -104,14 +107,17 @@
 
 /* Sections */
 .categories-section, .featured-section {
-  padding: 80px 20px;
+  padding: 40px 20px;
 }
 
 .section-title {
   text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 50px;
+  font-size: 2.2rem;
+  margin-bottom: 30px;
   color: var(--primary-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .category-grid {
@@ -354,12 +360,12 @@
   .hero-btn { padding: 12px 28px; font-size: 1rem; }
 
   /* Sections */
-  .categories-section, .featured-section { padding: 50px 16px; }
-  .section-title { font-size: 1.8rem; margin-bottom: 32px; }
+  .categories-section, .featured-section { padding: 25px 16px; }
+  .section-title { font-size: 1.6rem; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Grids — go single column */
-  .category-grid { grid-template-columns: 1fr; gap: 20px; }
-  .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+  .category-grid { grid-template-columns: 1fr; gap: 15px; }
+  .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
 
   /* Product card image smaller on mobile */
   .product-image { height: 200px; }
