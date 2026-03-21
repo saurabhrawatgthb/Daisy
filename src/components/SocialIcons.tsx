@@ -9,7 +9,6 @@ export default function SocialIcons() {
         rel="noopener noreferrer"
         style={{ animationDuration: '3s', background: '#25D366', color: 'white', padding: '12px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.25)', transition: 'transform 0.3s' }}
         aria-label="Chat with us on WhatsApp"
-        style={{ animationDuration: '3s' }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
