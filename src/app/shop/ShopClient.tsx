@@ -209,7 +209,7 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
             <p style={{ color: 'var(--text-muted)' }}>Try adjusting your search keyword or selected category filter.</p>
           </div>
         ) : (
-          <div className="product-grid">
+          <div className="shop-product-grid">
             {filteredProducts.map((product) => {
               const isWishlisted = wishlistIds.includes(product.id)
               return (

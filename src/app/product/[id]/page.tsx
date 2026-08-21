@@ -23,64 +23,88 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
   return (
     <>
       <Header />
-      <main className="main-content container" style={{ padding: '60px 20px' }}>
-        <div style={{ marginBottom: '30px' }}>
-          <Link href="/shop" style={{ color: 'var(--text-muted)', fontWeight: 500, transition: 'color 0.2s' }}>&larr; Back to Shop</Link>
+      <main className="main-content container" style={{ padding: '40px 20px 70px' }}>
+        <div style={{ marginBottom: '25px' }}>
+          <Link href="/shop" style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.92rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            &larr; Back to Shop Collection
+          </Link>
         </div>
 
-        <div className="product-detail-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'start' }}>
+        <div className="product-detail-grid">
           
-          <div className="product-image-large glass-card" style={{ height: '600px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Product Image Box */}
+          <div className="product-image-large glass-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', background: '#fff' }}>
             {product.imageUrl ? (
-              <img src={product.imageUrl} alt={product.title} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '20px' }} />
+              <img
+                src={product.imageUrl}
+                alt={product.title}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', maxHeight: '480px' }}
+              />
             ) : (
-              <div className="placeholder" style={{ color: 'var(--text-muted)' }}>No Image Available</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '1rem', fontStyle: 'italic' }}>No Image Available</div>
             )}
           </div>
 
-          <div className="product-info-large">
-            <span style={{ textTransform: 'uppercase', letterSpacing: '3px', color: 'var(--primary-dark)', fontSize: '0.85rem', fontWeight: 700 }}>{product.category}</span>
-            <h1 className="product-header-title" style={{ fontSize: '2.5rem', margin: '10px 0', lineHeight: 1.2 }}>{product.title}</h1>
-            
-            {/* Price and Ratings (Amazon-like) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
-              <span style={{ color: '#f39c12', fontSize: '1.2rem' }}>★★★★★</span>
-              <span style={{ color: '#007185', fontSize: '0.9rem', cursor: 'pointer' }}>124 ratings</span>
+          {/* Product Info & Actions */}
+          <div className="product-info-large" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <span style={{ textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--primary)', fontSize: '0.82rem', fontWeight: 700 }}>
+                {product.category}
+              </span>
+              <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', color: 'var(--primary-dark)', margin: '6px 0 10px', lineHeight: 1.25 }}>
+                {product.title}
+              </h1>
             </div>
 
-            <p className="product-header-price" style={{ fontSize: '2.2rem', color: '#B12704', fontWeight: 600, marginBottom: '5px', fontFamily: 'var(--font-heading)' }}>
-              <span style={{ fontSize: '1.2rem', verticalAlign: 'top' }}>₹</span>{product.price}
-            </p>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '30px' }}>Inclusive of all taxes</p>
-            
-            <div style={{ background: '#fff', padding: '25px', border: '1px solid var(--border)', borderRadius: '12px', marginBottom: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-              <h3 style={{ marginBottom: '15px', fontSize: '1.1rem', fontFamily: 'var(--font-body)', color: 'var(--primary-dark)', textTransform: 'uppercase', letterSpacing: '1px' }}>Product Details</h3>
-              <p style={{ color: 'var(--text-main)', whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.95rem' }}>{product.description || 'Experience the elegant touch of Daisy with this premium accessory.'}</p>
+            {/* Price Tag */}
+            <div style={{ background: 'var(--primary-soft)', padding: '14px 20px', borderRadius: '12px', border: '1px solid var(--border-pink)' }}>
+              <p style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.4rem)', color: 'var(--primary-dark)', fontWeight: 700, margin: 0, lineHeight: 1 }}>
+                ₹{product.price}
+              </p>
+              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
+                Inclusive of all taxes • Handcrafted with love 🌸
+              </span>
             </div>
 
+            {/* Product Details Box */}
+            <div className="glass-card" style={{ padding: '20px', background: 'rgba(255, 255, 255, 0.9)' }}>
+              <h3 style={{ marginBottom: '10px', fontSize: '1rem', color: 'var(--primary-dark)', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 700 }}>
+                About this piece
+              </h3>
+              <p style={{ color: 'var(--text-main)', whiteSpace: 'pre-wrap', lineHeight: 1.65, fontSize: '0.95rem', margin: 0 }}>
+                {product.description || 'Experience the elegant touch of Daisy with this premium accessory.'}
+              </p>
+            </div>
+
+            {/* Add to Cart Button */}
             <AddToCartButton product={product} />
 
-            {/* Feature Badges */}
-            <div style={{ marginTop: '30px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', textAlign: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: 45, height: 45, background: '#fcf8fa', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-dark)', fontSize: '1.5rem' }}>🚚</div>
-                <span style={{ fontSize: '0.8rem', color: '#007185', lineHeight: 1.2 }}>Free Delivery<br/>on ₹1000+</span>
+            {/* Quality and Delivery Badges */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', textAlign: 'center', marginTop: '10px' }}>
+              <div style={{ background: 'var(--bg-light)', padding: '12px 8px', borderRadius: '10px', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '1.4rem', marginBottom: '4px' }}>🚚</div>
+                <span style={{ fontSize: '0.78rem', color: 'var(--primary-dark)', fontWeight: 600, display: 'block', lineHeight: 1.2 }}>
+                  Free Delivery<br />in Dehradun
+                </span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: 45, height: 45, background: '#fcf8fa', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-dark)', fontSize: '1.5rem' }}>🔒</div>
-                <span style={{ fontSize: '0.8rem', color: '#007185', lineHeight: 1.2 }}>Secure<br/>Transaction</span>
+              <div style={{ background: 'var(--bg-light)', padding: '12px 8px', borderRadius: '10px', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '1.4rem', marginBottom: '4px' }}>🛡️</div>
+                <span style={{ fontSize: '0.78rem', color: 'var(--primary-dark)', fontWeight: 600, display: 'block', lineHeight: 1.2 }}>
+                  Anti-Tarnish<br />Guaranteed
+                </span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: 45, height: 45, background: '#fcf8fa', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-dark)', fontSize: '1.5rem' }}>✨</div>
-                <span style={{ fontSize: '0.8rem', color: '#007185', lineHeight: 1.2 }}>Premium<br/>Quality</span>
+              <div style={{ background: 'var(--bg-light)', padding: '12px 8px', borderRadius: '10px', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '1.4rem', marginBottom: '4px' }}>✨</div>
+                <span style={{ fontSize: '0.78rem', color: 'var(--primary-dark)', fontWeight: 600, display: 'block', lineHeight: 1.2 }}>
+                  Premium<br />Packaging
+                </span>
               </div>
             </div>
 
             {/* Delivery Estimate */}
-            <div style={{ marginTop: '30px', padding: '15px', background: '#f8f9fa', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid #e9ecef' }}>
-              <p><strong>Arrives:</strong> Generally in 3-5 business days.</p>
-              <p style={{ marginTop: '5px', color: '#007185', fontWeight: 500 }}>In stock and ready to pack.</p>
-              <p style={{ marginTop: '5px', color: 'var(--success)', fontWeight: 600 }}>🎊 Free delivery across Dehradun!</p>
+            <div style={{ padding: '14px 18px', background: '#ffffff', borderRadius: '10px', fontSize: '0.88rem', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <p style={{ margin: 0 }}><strong>Dispatch:</strong> Dispatched in 24-48 hours from Dehradun.</p>
+              <p style={{ margin: 0, color: 'var(--primary-dark)', fontWeight: 600 }}>🎊 Free delivery on all orders in Dehradun!</p>
             </div>
           </div>
 

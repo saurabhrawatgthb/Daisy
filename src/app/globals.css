@@ -1,47 +1,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap');
 
 :root {
-  /* Brand Color Palette */
-  --primary: #b2589a;
-  --primary-light: #f8c8dc;
-  --primary-dark: #822765;
-  --primary-glow: rgba(178, 88, 154, 0.28);
-  --accent-pink: #fdf0f7;
+  /* Predominant Pink & Soft Pink Color Palette */
+  --primary: #d4438b;           /* Vibrant Blossom Pink */
+  --primary-hover: #bd3178;     /* Deep Pink */
+  --primary-dark: #8c1e5a;      /* Rich Berry Pink */
+  --primary-deep: #5e103b;      /* Deep Wine Rose */
+  --primary-light: #fcd5e8;     /* Soft Blush Pink */
+  --primary-soft: #fde8f3;      /* Ultra Soft Pastel Pink */
+  --primary-glow: rgba(212, 67, 139, 0.28);
   
-  --bg-color: #fdf9fb;
-  --text-main: #2d1d28;
-  --text-muted: #6f5f6b;
+  --bg-color: #fdf6fa;          /* Soft Pinkish White Canvas */
+  --bg-light: #fef0f7;          /* Soft Rose Tint */
+  --text-main: #4a1c38;         /* Deep Warm Plum Pink for sharp readability */
+  --text-muted: #7d4d6a;        /* Soft Plum Muted Text */
   --surface: #ffffff;
-  --border: rgba(220, 185, 210, 0.45);
-  --border-light: rgba(255, 255, 255, 0.6);
+  
+  --border: rgba(228, 142, 189, 0.38);
+  --border-light: rgba(255, 255, 255, 0.75);
+  --border-pink: #f2b8d6;
+  
   --error: #e74c3c;
   --success: #27ae60;
   
-  /* Typography Variables */
+  /* Fonts */
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Fluid Responsive Typography with Clamp */
-  --text-xs: clamp(0.72rem, 0.2vw + 0.68rem, 0.8rem);
+  /* Fluid Responsive Font Sizes */
+  --text-xs: clamp(0.72rem, 0.25vw + 0.68rem, 0.82rem);
   --text-sm: clamp(0.82rem, 0.3vw + 0.76rem, 0.92rem);
-  --text-base: clamp(0.92rem, 0.4vw + 0.85rem, 1.05rem);
+  --text-base: clamp(0.92rem, 0.4vw + 0.85rem, 1.02rem);
   --text-lg: clamp(1.08rem, 0.6vw + 0.96rem, 1.25rem);
   --text-xl: clamp(1.25rem, 0.9vw + 1.05rem, 1.55rem);
   --text-2xl: clamp(1.5rem, 1.5vw + 1.2rem, 2rem);
   --text-3xl: clamp(1.85rem, 2.4vw + 1.35rem, 2.6rem);
   --text-hero: clamp(2.2rem, 4.5vw + 1.2rem, 3.8rem);
 
-  /* Glassmorphism Specs */
-  --glass-bg: rgba(255, 255, 255, 0.76);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.55);
-  --glass-bg-accent: rgba(253, 245, 252, 0.82);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.7);
-  --glass-shadow: 0 10px 32px 0 rgba(178, 88, 154, 0.08);
-  --glass-shadow-hover: 0 18px 45px 0 rgba(178, 88, 154, 0.16);
-  --glass-blur: blur(16px) saturate(180%);
+  /* Frosted Glass System */
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.6);
+  --glass-bg-accent: rgba(254, 238, 248, 0.85);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 10px 32px 0 rgba(212, 67, 139, 0.09);
+  --glass-shadow-hover: 0 18px 45px 0 rgba(212, 67, 139, 0.18);
+  --glass-blur: blur(18px) saturate(190%);
 }
 
-/* Universal Box & Screen Fitting */
+/* Universal Reset & Fit */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -70,9 +76,7 @@ body {
   min-height: 100vh;
 }
 
-/* =========================================
-   AMBIENT FLOATING GLASS GRADIENT ORBS
-   ========================================= */
+/* Ambient Floating Pastel Orbs */
 .ambient-background-container {
   position: fixed;
   inset: 0;
@@ -87,15 +91,15 @@ body {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.65;
+  opacity: 0.6;
   will-change: transform;
 }
 
 .orb-1 {
   top: -10%;
   left: -5%;
-  width: clamp(280px, 45vw, 550px);
-  height: clamp(280px, 45vw, 550px);
+  width: clamp(300px, 45vw, 550px);
+  height: clamp(300px, 45vw, 550px);
   background: radial-gradient(circle, #fcd5e8 0%, rgba(248, 200, 220, 0.4) 70%, transparent 100%);
   animation: floatOrb1 22s ease-in-out infinite alternate;
 }
@@ -105,7 +109,7 @@ body {
   right: -8%;
   width: clamp(300px, 50vw, 600px);
   height: clamp(300px, 50vw, 600px);
-  background: radial-gradient(circle, #ebd4fb 0%, rgba(218, 185, 245, 0.35) 70%, transparent 100%);
+  background: radial-gradient(circle, #f8c8dc 0%, rgba(254, 215, 235, 0.4) 70%, transparent 100%);
   animation: floatOrb2 26s ease-in-out infinite alternate;
 }
 
@@ -114,7 +118,7 @@ body {
   left: 20%;
   width: clamp(260px, 40vw, 500px);
   height: clamp(260px, 40vw, 500px);
-  background: radial-gradient(circle, #fce0dc 0%, rgba(254, 215, 226, 0.4) 70%, transparent 100%);
+  background: radial-gradient(circle, #ffd1e8 0%, rgba(253, 220, 238, 0.4) 70%, transparent 100%);
   animation: floatOrb3 20s ease-in-out infinite alternate;
 }
 
@@ -123,26 +127,26 @@ body {
   left: 45%;
   width: clamp(200px, 30vw, 400px);
   height: clamp(200px, 30vw, 400px);
-  background: radial-gradient(circle, #fee8f4 0%, rgba(245, 220, 240, 0.25) 70%, transparent 100%);
+  background: radial-gradient(circle, #fee2f2 0%, rgba(254, 226, 242, 0.3) 70%, transparent 100%);
   animation: floatOrb2 18s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes floatOrb1 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, 80px) scale(1.1); }
-  100% { transform: translate(-40px, 120px) scale(0.95); }
+  50% { transform: translate(50px, 70px) scale(1.08); }
+  100% { transform: translate(-30px, 100px) scale(0.96); }
 }
 
 @keyframes floatOrb2 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-70px, -60px) scale(1.12); }
-  100% { transform: translate(40px, -100px) scale(0.9); }
+  50% { transform: translate(-60px, -50px) scale(1.1); }
+  100% { transform: translate(30px, -80px) scale(0.92); }
 }
 
 @keyframes floatOrb3 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(50px, -50px) scale(1.08); }
-  100% { transform: translate(-60px, 40px) scale(1); }
+  50% { transform: translate(40px, -40px) scale(1.06); }
+  100% { transform: translate(-50px, 30px) scale(1); }
 }
 
 .app-content-wrapper {
@@ -154,49 +158,12 @@ body {
   flex-direction: column;
 }
 
-/* =========================================
-   UNIVERSAL ANIMATIONS & KEYFRAMES
-   ========================================= */
-@keyframes pageEntrance {
-  0% { opacity: 0; transform: translateY(14px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes shimmerGlow {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-@keyframes pulseGlowRing {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(178, 88, 154, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(178, 88, 154, 0); }
-}
-
-@keyframes subtleFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-@keyframes heartBeat {
-  0%, 100% { transform: scale(1); }
-  14% { transform: scale(1.25); }
-  28% { transform: scale(1); }
-  42% { transform: scale(1.2); }
-  70% { transform: scale(1); }
-}
-
-.main-content, .dashboard-wrapper, main {
-  animation: pageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* =========================================
-   TYPOGRAPHY
-   ========================================= */
+/* Typography & Headings */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
-  color: var(--text-main);
-  line-height: 1.25;
+  color: var(--primary-dark);
+  line-height: 1.3;
   letter-spacing: -0.01em;
 }
 
@@ -207,68 +174,60 @@ h4 { font-size: var(--text-lg); }
 
 p {
   font-size: var(--text-base);
+  color: var(--text-main);
+  line-height: 1.65;
 }
 
 a {
-  color: inherit;
+  color: var(--primary);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-/* =========================================
-   CONTAINERS & FLUID LAYOUTS
-   ========================================= */
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Universal Page Entrance */
+@keyframes pageEntrance {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.main-content, .dashboard-wrapper, main {
+  animation: pageEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Containers */
 .container {
   width: 100%;
-  max-width: 1240px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 clamp(14px, 3.5vw, 32px);
+  padding: 0 clamp(16px, 3.5vw, 30px);
 }
 
-/* =========================================
-   GLASSMORPHISM SYSTEM
-   ========================================= */
+/* Glassmorphism System */
 .glass-card {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 30px rgba(212, 67, 139, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.9);
   border-radius: clamp(12px, 2vw, 18px);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
   position: relative;
-  overflow: hidden;
-}
-
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
-  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 1);
 }
 
-.glass-card-interactive:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: var(--glass-shadow-hover);
-}
-
-/* =========================================
-   BUTTONS & MICRO-INTERACTIONS
-   ========================================= */
+/* Pink Buttons */
 .btn {
-  background: linear-gradient(135deg, #c468a9 0%, #b2589a 50%, #993e82 100%);
-  background-size: 200% auto;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: clamp(10px, 1.8vw, 14px) clamp(20px, 3vw, 30px);
+  background: linear-gradient(135deg, #e45a9e 0%, #d4438b 50%, #b82b72 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: clamp(10px, 1.8vw, 13px) clamp(20px, 3vw, 28px);
   border-radius: clamp(8px, 1.2vw, 12px);
   font-family: var(--font-body);
   font-size: var(--text-sm);
@@ -279,35 +238,20 @@ a {
   justify-content: center;
   gap: 8px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 16px rgba(178, 88, 154, 0.3);
+  box-shadow: 0 4px 15px rgba(212, 67, 139, 0.3);
   position: relative;
   overflow: hidden;
   text-decoration: none;
 }
 
-.btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  transition: left 0.5s ease;
-}
-
-.btn:hover:not(:disabled)::after {
-  left: 100%;
-}
-
 .btn:hover:not(:disabled) {
-  background-position: right center;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(178, 88, 154, 0.45);
+  background: linear-gradient(135deg, #eb6aa9 0%, #dc4d94 50%, #c4337d 100%);
+  transform: translateY(-2.5px) scale(1.02);
+  box-shadow: 0 8px 22px rgba(212, 67, 139, 0.42);
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(0) scale(0.97);
+  transform: translateY(0) scale(0.98);
 }
 
 .btn:disabled {
@@ -318,25 +262,32 @@ a {
 }
 
 .btn-outline {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  color: var(--primary);
+  color: var(--primary) !important;
   border: 1.5px solid var(--primary);
-  box-shadow: 0 2px 8px rgba(178, 88, 154, 0.1);
+  box-shadow: 0 2px 8px rgba(212, 67, 139, 0.08);
+  padding: clamp(9px, 1.5vw, 12px) clamp(18px, 2.5vw, 24px);
+  border-radius: clamp(8px, 1.2vw, 12px);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
 }
 
 .btn-outline:hover:not(:disabled) {
   background: var(--primary);
-  color: #fff;
+  color: #ffffff !important;
   border-color: var(--primary);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(178, 88, 154, 0.3);
+  box-shadow: 0 6px 18px rgba(212, 67, 139, 0.25);
 }
 
-/* =========================================
-   FORM ELEMENTS
-   ========================================= */
+/* Form Inputs */
 .input-group {
   margin-bottom: clamp(14px, 2.5vw, 20px);
 }
@@ -346,13 +297,13 @@ a {
   margin-bottom: 6px;
   font-weight: 600;
   font-size: var(--text-sm);
-  color: var(--text-main);
+  color: var(--primary-dark);
 }
 
 .input-field {
   width: 100%;
   padding: clamp(10px, 1.5vw, 13px) clamp(12px, 1.8vw, 16px);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border);
@@ -361,37 +312,19 @@ a {
   font-size: var(--text-base);
   color: var(--text-main);
   transition: all 0.25s ease;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 1px 2px rgba(212, 67, 139, 0.03);
 }
 
 .input-field:focus {
   outline: none;
   background: #ffffff;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3.5px rgba(178, 88, 154, 0.2);
+  box-shadow: 0 0 0 3.5px rgba(212, 67, 139, 0.18);
 }
 
 .error-message {
   color: var(--error);
   font-size: var(--text-xs);
   margin-top: 5px;
-  font-weight: 500;
-}
-
-/* =========================================
-   RESPONSIVE UTILITIES & BREAKPOINTS
-   ========================================= */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 0 12px;
-  }
-  .input-field {
-    font-size: 16px; /* Prevents auto-zoom on iOS */
-  }
+  font-weight: 600;
 }
