@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import '../store.css'
 
 type OrderItem = {
@@ -40,7 +41,7 @@ type SavedAddress = {
 }
 
 export default function MyOrders() {
-  const [tab, setTab] = useState<'orders' | 'addresses'>('orders')
+  const [tab, setTab] = useState<'orders' | 'addresses' | 'settings'>('orders')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
@@ -48,6 +49,7 @@ export default function MyOrders() {
   const [error, setError] = useState('')
   const [orders, setOrders] = useState<OrderStatus[] | null>(null)
   const [user, setUser] = useState<{ id?: string; name?: string; email: string } | null>(null)
+  const router = useRouter()
 
   // Address Book state
   const [addresses, setAddresses] = useState<SavedAddress[]>([])
@@ -60,6 +62,12 @@ export default function MyOrders() {
     address: '',
     pincode: ''
   })
+
+  // Account deletion state
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [deletePassword, setDeletePassword] = useState('')
+  const [deletingAccount, setDeletingAccount] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   const fetchAddresses = async () => {
     try {
@@ -147,6 +155,37 @@ export default function MyOrders() {
       setAddresses(prev => prev.filter(a => a.id !== id))
     } catch (err) {
       console.error(err)
+    }
+  }
+
+  const handleDeleteUserAccount = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setDeleteError('')
+
+    if (!deletePassword) {
+      setDeleteError('Please enter your password to confirm')
+      return
+    }
+
+    setDeletingAccount(true)
+    try {
+      const res = await fetch('/api/auth/me', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmPassword: deletePassword })
+      })
+      const data = await res.json()
+
+      if (!res.ok) throw new Error(data.error || 'Failed to delete account')
+
+      alert('Your account has been deleted successfully.')
+      window.dispatchEvent(new Event('authChanged'))
+      router.push('/')
+      router.refresh()
+    } catch (err: any) {
+      setDeleteError(err.message || 'Failed to delete account')
+    } finally {
+      setDeletingAccount(false)
     }
   }
 
@@ -250,36 +289,51 @@ export default function MyOrders() {
                 </div>
 
                 {/* Tab Navigation */}
-                <div style={{ display: 'flex', gap: '8px', background: '#f5e8f3', padding: '4px', borderRadius: '10px' }}>
+                <div style={{ display: 'flex', gap: '6px', background: '#f5e8f3', padding: '4px', borderRadius: '10px', flexWrap: 'wrap' }}>
                   <button
                     onClick={() => setTab('orders')}
                     style={{
-                      padding: '8px 16px',
+                      padding: '7px 14px',
                       border: 'none',
                       borderRadius: '8px',
                       fontWeight: 600,
-                      fontSize: '0.85rem',
+                      fontSize: '0.82rem',
                       cursor: 'pointer',
                       background: tab === 'orders' ? 'var(--primary, #b2589a)' : 'transparent',
                       color: tab === 'orders' ? '#fff' : 'inherit'
                     }}
                   >
-                    📦 My Orders
+                    📦 Orders
                   </button>
                   <button
                     onClick={() => setTab('addresses')}
                     style={{
-                      padding: '8px 16px',
+                      padding: '7px 14px',
                       border: 'none',
                       borderRadius: '8px',
                       fontWeight: 600,
-                      fontSize: '0.85rem',
+                      fontSize: '0.82rem',
                       cursor: 'pointer',
                       background: tab === 'addresses' ? 'var(--primary, #b2589a)' : 'transparent',
                       color: tab === 'addresses' ? '#fff' : 'inherit'
                     }}
                   >
-                    📍 Saved Addresses ({addresses.length})
+                    📍 Addresses ({addresses.length})
+                  </button>
+                  <button
+                    onClick={() => setTab('settings')}
+                    style={{
+                      padding: '7px 14px',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontWeight: 600,
+                      fontSize: '0.82rem',
+                      cursor: 'pointer',
+                      background: tab === 'settings' ? 'var(--primary, #b2589a)' : 'transparent',
+                      color: tab === 'settings' ? '#fff' : 'inherit'
+                    }}
+                  >
+                    ⚙️ Settings
                   </button>
                 </div>
               </div>
@@ -530,6 +584,102 @@ export default function MyOrders() {
                       <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '4px 0' }}>PIN: <strong>{addr.pincode}</strong> • 📞 {addr.phone}</p>
                     </div>
                   ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 3: ACCOUNT SETTINGS & PRIVACY (DELETE ACCOUNT) */}
+          {tab === 'settings' && user && (
+            <div>
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--primary-dark)', marginBottom: '15px' }}>
+                Account Settings & Privacy
+              </h3>
+
+              <div style={{ background: '#faf4f9', padding: '20px', borderRadius: '12px', border: '1px solid #f2d6ea', marginBottom: '25px' }}>
+                <p style={{ margin: '0 0 6px', fontSize: '0.95rem' }}>
+                  <strong>Account Name:</strong> {user.name || 'Not provided'}
+                </p>
+                <p style={{ margin: 0, fontSize: '0.95rem' }}>
+                  <strong>Registered Email:</strong> {user.email}
+                </p>
+              </div>
+
+              {/* Danger Zone: Delete User Account */}
+              <div style={{ padding: '25px', borderRadius: '12px', border: '1px solid #fadbd8', background: '#fffcfc' }}>
+                <h4 style={{ color: '#c0392b', margin: '0 0 8px', fontSize: '1.1rem' }}>
+                  ⚠️ Delete Account
+                </h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '16px', lineHeight: 1.5 }}>
+                  Once you delete your account, your profile and saved addresses will be permanently removed.
+                </p>
+                <button
+                  onClick={() => { setDeleteModalOpen(true); setDeleteError(''); }}
+                  className="btn"
+                  style={{ background: '#e74c3c', padding: '10px 20px', fontSize: '0.88rem' }}
+                >
+                  🗑️ Delete My Account
+                </button>
+              </div>
+
+              {/* User Account Deletion Modal */}
+              {deleteModalOpen && (
+                <div style={{
+                  position: 'fixed',
+                  inset: 0,
+                  background: 'rgba(0,0,0,0.6)',
+                  backdropFilter: 'blur(4px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 1000,
+                  padding: '20px'
+                }}>
+                  <div className="glass-card" style={{ maxWidth: '450px', width: '100%', background: '#fff', padding: '30px', borderRadius: '16px' }}>
+                    <h3 style={{ color: '#c0392b', margin: '0 0 10px' }}>Delete Your Account?</h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '20px', lineHeight: 1.5 }}>
+                      Please enter your password to confirm account deletion. This action cannot be undone.
+                    </p>
+
+                    {deleteError && (
+                      <div style={{ background: '#fdedec', color: '#e74c3c', padding: '10px', borderRadius: '6px', fontSize: '0.85rem', marginBottom: '15px' }}>
+                        {deleteError}
+                      </div>
+                    )}
+
+                    <form onSubmit={handleDeleteUserAccount}>
+                      <div className="input-group">
+                        <label className="input-label">Confirm Your Password</label>
+                        <input
+                          required
+                          type="password"
+                          className="input-field"
+                          placeholder="••••••••"
+                          value={deletePassword}
+                          onChange={e => setDeletePassword(e.target.value)}
+                        />
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                        <button
+                          type="submit"
+                          className="btn"
+                          style={{ background: '#e74c3c', flex: 1, padding: '10px' }}
+                          disabled={deletingAccount}
+                        >
+                          {deletingAccount ? 'Deleting...' : 'Yes, Delete Account'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteModalOpen(false)}
+                          className="btn btn-outline"
+                          style={{ flex: 1, padding: '10px' }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               )}
             </div>
