@@ -15,7 +15,11 @@ export default async function AdminDashboard() {
   
   const totalRevenue = await prisma.order.aggregate({
     _sum: { totalAmount: true },
-    where: { status: 'Paid' } // Assuming Paid orders only
+    where: {
+      status: {
+        in: ['Paid', 'Shipped', 'Delivered']
+      }
+    }
   })
 
   return (

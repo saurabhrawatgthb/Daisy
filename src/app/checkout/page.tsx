@@ -6,12 +6,14 @@ import { useRouter } from 'next/navigation'
 import '../store.css'
 
 type Step = 'details' | 'pay' | 'confirm'
+type PaymentMethod = 'UPI' | 'COD'
 
 export default function Checkout() {
   const [cart, setCart] = useState<any[]>([])
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState<Step>('details')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('UPI')
   const [dbOrderId, setDbOrderId] = useState('')
   const [utrNumber, setUtrNumber] = useState('')
   const [utrError, setUtrError] = useState('')
@@ -21,7 +23,29 @@ export default function Checkout() {
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem('daisy_cart') || '[]'))
-    setMounted(true)
+    
+    // Check if user is logged in and pre-populate form
+    const loadUserProfile = async () => {
+      try {
+        const res = await fetch('/api/auth/me')
+        const data = await res.json()
+        if (data.user) {
+          setFormData({
+            name: data.user.name || '',
+            email: data.user.email || '',
+            phone: data.user.phone || '',
+            pincode: data.user.pincode || '',
+            address: data.user.address || ''
+          })
+        }
+      } catch (e) {
+        /* guest checkout fallback */
+      } finally {
+        setMounted(true)
+      }
+    }
+
+    loadUserProfile()
   }, [])
 
   const subtotal = cart.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0)
@@ -31,7 +55,7 @@ export default function Checkout() {
   const shippingFee = (subtotal === 0 || isDehradun) ? 0 : 30
   const total = subtotal + shippingFee
 
-  // Step 1: Save order to DB → move to QR payment step
+  // Handle Order Placement
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault()
     if (cart.length === 0) return
@@ -40,12 +64,26 @@ export default function Checkout() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: cart, customerDetails: formData })
+        body: JSON.stringify({
+          items: cart,
+          customerDetails: formData,
+          paymentMethod
+        })
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
+      if (!res.ok) throw new Error(data.error || 'Failed to place order')
+      
       setDbOrderId(data.dbOrderId)
-      setStep('pay')
+
+      if (paymentMethod === 'COD') {
+        // Direct order confirmation for Cash on Delivery
+        localStorage.removeItem('daisy_cart')
+        window.dispatchEvent(new Event('cartUpdated'))
+        setStep('confirm')
+      } else {
+        // Proceed to QR / UTR submission screen
+        setStep('pay')
+      }
     } catch (err: any) {
       alert('Error placing order: ' + err.message)
     } finally {
@@ -100,18 +138,34 @@ export default function Checkout() {
       <>
         <Header />
         <main className="main-content container" style={{ padding: '80px 20px', textAlign: 'center' }}>
-          <div className="glass-card" style={{ maxWidth: 500, margin: '0 auto', padding: '50px 40px' }}>
+          <div className="glass-card" style={{ maxWidth: 520, margin: '0 auto', padding: '50px 40px' }}>
             <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🎉</div>
-            <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '15px' }}>Order Confirmed!</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '8px' }}>
-              Your payment is under verification. We'll confirm your order shortly.
+            <h2 style={{ fontSize: '2rem', color: 'var(--primary-dark)', marginBottom: '15px' }}>
+              Order Confirmed!
+            </h2>
+            
+            {paymentMethod === 'COD' ? (
+              <p style={{ color: 'var(--text-muted)', marginBottom: '15px', lineHeight: 1.6 }}>
+                Your <strong>Cash on Delivery</strong> order has been placed successfully. Please keep ₹{total} cash ready at the time of delivery.
+              </p>
+            ) : (
+              <p style={{ color: 'var(--text-muted)', marginBottom: '15px', lineHeight: 1.6 }}>
+                Your payment is under verification. We will process and dispatch your order shortly.
+              </p>
+            )}
+
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '25px', background: '#fdf5fc', padding: '10px', borderRadius: '8px' }}>
+              Order ID: <strong style={{ fontFamily: 'monospace', color: 'var(--primary-dark)' }}>#{dbOrderId.slice(0, 8).toUpperCase()}</strong>
             </p>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '30px' }}>
-              Order ID: <strong>{dbOrderId.slice(0, 8).toUpperCase()}</strong>
-            </p>
-            <button className="btn" style={{ width: '100%' }} onClick={() => router.push('/')}>
-              Back to Home
-            </button>
+
+            <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+              <button className="btn" style={{ width: '100%' }} onClick={() => router.push('/my-orders')}>
+                View My Orders
+              </button>
+              <button className="btn btn-outline" style={{ width: '100%' }} onClick={() => router.push('/')}>
+                Back to Home
+              </button>
+            </div>
           </div>
         </main>
         <Footer />
@@ -161,6 +215,49 @@ export default function Checkout() {
                   <textarea required rows={4} className="input-field" style={{ resize: 'vertical' }}
                     value={formData.address}
                     onChange={e => setFormData({ ...formData, address: e.target.value })}></textarea>
+                </div>
+
+                {/* Payment Method Selector */}
+                <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
+                  <h3 style={{ fontSize: '1.2rem', marginBottom: '15px', color: 'var(--primary-dark)' }}>
+                    Choose Payment Method
+                  </h3>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                    <div
+                      onClick={() => setPaymentMethod('UPI')}
+                      style={{
+                        padding: '16px',
+                        borderRadius: '12px',
+                        border: `2px solid ${paymentMethod === 'UPI' ? 'var(--primary)' : 'var(--border)'}`,
+                        background: paymentMethod === 'UPI' ? '#fff4fc' : '#ffffff',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        textAlign: 'center'
+                      }}
+                    >
+                      <div style={{ fontSize: '1.5rem', marginBottom: '6px' }}>📱</div>
+                      <strong style={{ display: 'block', fontSize: '0.95rem' }}>UPI / QR Code</strong>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>GPay, PhonePe, Paytm</span>
+                    </div>
+
+                    <div
+                      onClick={() => setPaymentMethod('COD')}
+                      style={{
+                        padding: '16px',
+                        borderRadius: '12px',
+                        border: `2px solid ${paymentMethod === 'COD' ? 'var(--primary)' : 'var(--border)'}`,
+                        background: paymentMethod === 'COD' ? '#fff4fc' : '#ffffff',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        textAlign: 'center'
+                      }}
+                    >
+                      <div style={{ fontSize: '1.5rem', marginBottom: '6px' }}>💵</div>
+                      <strong style={{ display: 'block', fontSize: '0.95rem' }}>Cash on Delivery</strong>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Pay cash upon arrival</span>
+                    </div>
+                  </div>
                 </div>
               </form>
             </div>
@@ -225,7 +322,7 @@ export default function Checkout() {
             Order Summary
           </h3>
           <div style={{ marginBottom: '20px', maxHeight: '260px', overflowY: 'auto' }}>
-            {(step === 'details' ? cart : cart).map((item: any) => (
+            {cart.map((item: any) => (
               <div key={item.productId} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px', fontSize: '0.95rem' }}>
                 <span style={{ color: 'var(--text-muted)' }}>{item.quantity}× {item.title}</span>
                 <span>₹{item.price * item.quantity}</span>
@@ -249,15 +346,19 @@ export default function Checkout() {
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '28px', fontSize: '1.3rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '1.3rem' }}>
             <span style={{ fontWeight: 600 }}>Total</span>
             <span style={{ fontWeight: 700, color: 'var(--primary-dark)' }}>₹{total}</span>
+          </div>
+
+          <div style={{ marginBottom: '20px', padding: '10px 14px', background: '#faf3f8', borderRadius: '8px', fontSize: '0.85rem' }}>
+            <strong>Payment Mode:</strong> {paymentMethod === 'COD' ? '💵 Cash on Delivery' : '📱 UPI / Online'}
           </div>
 
           {step === 'details' && (
             <button type="submit" form="checkout-form" className="btn"
               style={{ width: '100%', fontSize: '1.05rem', padding: '15px' }} disabled={loading}>
-              {loading ? 'Processing...' : 'Place Order →'}
+              {loading ? 'Processing...' : (paymentMethod === 'COD' ? 'Place Order (Cash on Delivery) →' : 'Proceed to Payment →')}
             </button>
           )}
           {step === 'pay' && (
@@ -274,3 +375,4 @@ export default function Checkout() {
     </>
   )
 }
+

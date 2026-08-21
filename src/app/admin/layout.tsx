@@ -75,6 +75,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </span>
             )}
           </Link>
+          <Link href="/admin/settings" className={`nav-link ${pathname === '/admin/settings' ? 'active' : ''}`}>
+            ⚙️ Settings
+          </Link>
         </nav>
         <div className="admin-footer">
           <button onClick={handleLogout} className="btn logout-btn">Logout</button>

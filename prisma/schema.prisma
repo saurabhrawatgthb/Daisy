@@ -9,37 +9,46 @@ datasource db {
 
 model User {
   id        String   @id @default(cuid())
+  name      String?
   email     String   @unique
   password  String
+  phone     String?
+  address   String?
+  pincode   String?
+  role      String   @default("customer") // "admin" or "customer"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders    Order[]
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  price       Float
+  id               String      @id @default(cuid())
+  title            String
+  description      String
+  price            Float
   category         String
   imageUrl         String
   additionalImages String[]    @default([])
   createdAt        DateTime    @default(now())
-  updatedAt   DateTime @updatedAt
-  orderItems  OrderItem[]
+  updatedAt        DateTime    @updatedAt
+  orderItems       OrderItem[]
 }
 
 model Order {
-  id              String   @id @default(cuid())
+  id              String      @id @default(cuid())
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   customerName    String
   customerEmail   String
   customerPhone   String
   customerPincode String
   customerAddress String
   totalAmount     Float
-  status          String   @default("Pending") // Pending, Paid, Shipped, Delivered
+  status          String      @default("Pending") // Pending, Payment Submitted, Paid, Shipped, Delivered, Rejected
+  paymentMethod   String      @default("UPI")     // UPI, COD
   paymentIntentId String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
   orderItems      OrderItem[]
 }
 
