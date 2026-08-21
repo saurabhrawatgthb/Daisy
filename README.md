@@ -88,6 +88,9 @@ SMTP_EMAIL="your-store-email@gmail.com"
 SMTP_PASSWORD="your-gmail-app-password"
 SMTP_SERVICE="gmail"
 
+# Admin Secret Key (Required for registering new Admin accounts)
+ADMIN_SECRET_KEY="daisy_admin_secret_2026"
+
 # Admin Notifications
 ADMIN_NOTIFICATION_EMAIL="admin@daisy.com"
 ADMIN_PHONE_NUMBER="+919876543210"
@@ -120,13 +123,20 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🔐 Default Admin Access
+## 🔐 Admin Access & Secret Code
 
-When you first navigate to `/admin/login`, you can sign in with default credentials:
-- **Email**: `admin@daisy.com`
-- **Password**: `daisy123`
+1. **Default Admin Credentials**:
+   - **Email**: `admin@daisy.com`
+   - **Password**: `daisy123`
 
-> 💡 **Tip:** After initial login, navigate to **Admin Dashboard → ⚙️ Settings** (`/admin/settings`) to update your email address and password.
+2. **Registering Multiple Admins (Secret Authorization Code)**:
+   - Navigate to `/admin/login` and click **"+ Register Admin"**.
+   - Enter your Name, Email, Password, and the **Admin Secret Code** (configured in `.env` as `ADMIN_SECRET_KEY`, default: `daisy_admin_secret_2026`).
+   - If the code is correct, your account is created with `role: "admin"` and granted access to the admin dashboard.
+   - Any user without the valid Secret Code is rejected.
+
+3. **Updating Credentials**:
+   - Navigate to **Admin Dashboard → ⚙️ Settings** (`/admin/settings`) to update your email address and password.
 
 ---
 

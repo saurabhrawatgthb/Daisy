@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { prisma, ensureDatabaseSchema } from '@/lib/db'
 import { verifyPassword, createSession } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
   try {
+    await ensureDatabaseSchema()
     const { email, password } = await request.json()
 
     if (!email || !password) {
