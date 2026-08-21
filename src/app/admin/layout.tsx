@@ -32,8 +32,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const handleLogout = async () => {
-    document.cookie = 'session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' })
+    } catch (e) {
+      console.error(e)
+    }
     router.push('/admin/login')
+    router.refresh()
   }
 
   return (
@@ -83,7 +88,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
         </nav>
         <div className="admin-footer">
-          <button onClick={handleLogout} className="btn logout-btn">Logout</button>
+          <button
+            onClick={handleLogout}
+            className="btn admin-sidebar-logout-btn"
+            style={{
+              width: '100%',
+              padding: '10px 16px',
+              fontSize: '0.9rem',
+              fontWeight: 700,
+              background: '#e74c3c',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 14px rgba(231, 76, 60, 0.3)'
+            }}
+          >
+            🚪 Logout Admin
+          </button>
         </div>
       </aside>
 
@@ -104,7 +127,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 🔔 {pendingCount} order{pendingCount > 1 ? 's need' : ' needs'} attention
               </Link>
             )}
-            <Link href="/" className="btn btn-outline" target="_blank">View Store</Link>
+            <Link href="/" className="btn btn-outline" target="_blank" style={{ padding: '7px 14px', fontSize: '0.85rem' }}>
+              View Store ↗
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="btn"
+              style={{
+                padding: '7px 16px',
+                fontSize: '0.85rem',
+                background: '#e74c3c',
+                borderColor: '#c0392b',
+                boxShadow: '0 2px 10px rgba(231, 76, 60, 0.35)',
+                color: '#ffffff'
+              }}
+              title="Sign out of Admin Dashboard"
+            >
+              🚪 Logout
+            </button>
           </div>
         </header>
         <div className="admin-content">

@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import './login.css'
 
-export default function AdminLogin() {
+function AdminLoginForm() {
+  const searchParams = useSearchParams()
+  const redirectTarget = searchParams.get('redirect') || '/admin'
   const [tab, setTab] = useState<'login' | 'register'>('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -35,7 +37,7 @@ export default function AdminLogin() {
           throw new Error(data.error || 'Login failed')
         }
 
-        router.push('/admin')
+        router.push(redirectTarget)
         router.refresh()
       } else {
         const res = await fetch('/api/admin/register', {
@@ -52,7 +54,7 @@ export default function AdminLogin() {
 
         setSuccess('Admin account created successfully! Redirecting...')
         setTimeout(() => {
-          router.push('/admin')
+          router.push(redirectTarget)
           router.refresh()
         }, 1000)
       }
@@ -204,3 +206,10 @@ export default function AdminLogin() {
   )
 }
 
+export default function AdminLogin() {
+  return (
+    <Suspense fallback={<div className="login-wrapper"><div className="glass-card login-card" style={{ textAlign: 'center', padding: '40px' }}>Loading portal...</div></div>}>
+      <AdminLoginForm />
+    </Suspense>
+  )
+}

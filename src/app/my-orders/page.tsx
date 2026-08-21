@@ -343,51 +343,25 @@ export default function MyOrders() {
           {/* TAB 1: ORDERS */}
           {tab === 'orders' && (
             <div>
-              {!user && (
-                <>
-                  <div style={{
-                    background: '#fdf5fc',
-                    border: '1px solid #f2d6ea',
-                    borderRadius: '10px',
-                    padding: '16px 20px',
-                    marginBottom: '30px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: '10px'
-                  }}>
-                    <div>
-                      <strong style={{ color: 'var(--primary-dark)', display: 'block' }}>Have a Daisy account?</strong>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Sign in to view all your connected orders and saved addresses.</span>
-                    </div>
-                    <Link href="/login" className="btn" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>
-                      Sign In
+              {!user && !initialLoading && (
+                <div style={{ textAlign: 'center', padding: '30px 10px' }}>
+                  <div style={{ fontSize: '3.5rem', marginBottom: '15px' }}>🔒</div>
+                  <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-dark)', marginBottom: '8px' }}>
+                    Sign In Required
+                  </h2>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '420px', margin: '0 auto 25px', lineHeight: 1.6 }}>
+                    Please sign in with your Daisy account to view your past orders, manage delivery addresses, and account details.
+                  </p>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '300px', margin: '0 auto 30px' }}>
+                    <Link href="/login?redirect=/my-orders" className="btn" style={{ padding: '12px 24px', fontSize: '0.95rem' }}>
+                      Sign In to My Account 👤
+                    </Link>
+                    <Link href="/track" className="btn btn-outline" style={{ padding: '10px 20px', fontSize: '0.88rem' }}>
+                      Track Single Order by ID 📍
                     </Link>
                   </div>
-
-                  <form onSubmit={handleSearch}>
-                    <p style={{ color: 'var(--text-muted)', marginBottom: '20px', textAlign: 'center', fontSize: '0.95rem' }}>
-                      Or lookup orders with your <strong>Email Address</strong> and <strong>Phone Number</strong>:
-                    </p>
-
-                    <div className="input-group">
-                      <label className="input-label">Email Address</label>
-                      <input required type="email" className="input-field" placeholder="Used during checkout" value={email} onChange={e => setEmail(e.target.value)} />
-                    </div>
-
-                    <div className="input-group">
-                      <label className="input-label">Phone Number</label>
-                      <input required type="text" className="input-field" placeholder="Used during checkout" value={phone} onChange={e => setPhone(e.target.value)} />
-                    </div>
-
-                    {error && <div className="error-message" style={{ marginBottom: '20px', textAlign: 'center', color: '#e74c3c' }}>{error}</div>}
-
-                    <button type="submit" className="btn" style={{ width: '100%', padding: '14px' }} disabled={loading}>
-                      {loading ? 'Searching Orders...' : 'Find My Orders'}
-                    </button>
-                  </form>
-                </>
+                </div>
               )}
 
               {initialLoading && user ? (

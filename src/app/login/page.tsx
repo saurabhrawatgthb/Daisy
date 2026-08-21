@@ -1,11 +1,13 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import '../store.css'
 
-export default function CustomerAuthPage() {
+function CustomerAuthContent() {
+  const searchParams = useSearchParams()
+  const redirectTarget = searchParams.get('redirect') || '/my-orders'
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +34,7 @@ export default function CustomerAuthPage() {
         if (!res.ok) throw new Error(data.error || 'Login failed')
 
         window.dispatchEvent(new Event('authChanged'))
-        router.push('/my-orders')
+        router.push(redirectTarget)
         router.refresh()
       } else {
         const res = await fetch('/api/auth/register', {
@@ -46,7 +48,7 @@ export default function CustomerAuthPage() {
         window.dispatchEvent(new Event('authChanged'))
         setSuccess('Account created successfully! Redirecting...')
         setTimeout(() => {
-          router.push('/my-orders')
+          router.push(redirectTarget)
           router.refresh()
         }, 1000)
       }
@@ -59,7 +61,6 @@ export default function CustomerAuthPage() {
 
   return (
     <>
-      <Header />
       <div className="page-header">
         <h1>{mode === 'login' ? 'Welcome Back' : 'Create an Account'}</h1>
       </div>
@@ -113,29 +114,13 @@ export default function CustomerAuthPage() {
           </div>
 
           {error && (
-            <div style={{
-              background: '#fdedec',
-              color: '#e74c3c',
-              padding: '12px 16px',
-              borderRadius: '8px',
-              marginBottom: '20px',
-              fontSize: '0.9rem',
-              border: '1px solid #fadbd8'
-            }}>
+            <div style={{ background: '#fdedec', color: '#e74c3c', padding: '10px 14px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.9rem', border: '1px solid #fadbd8' }}>
               {error}
             </div>
           )}
 
           {success && (
-            <div style={{
-              background: '#eafaf1',
-              color: '#27ae60',
-              padding: '12px 16px',
-              borderRadius: '8px',
-              marginBottom: '20px',
-              fontSize: '0.9rem',
-              border: '1px solid #a9dfbf'
-            }}>
+            <div style={{ background: '#eafaf1', color: '#27ae60', padding: '10px 14px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.9rem', border: '1px solid #a9dfbf' }}>
               {success}
             </div>
           )}
@@ -147,8 +132,8 @@ export default function CustomerAuthPage() {
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Priya Sharma"
                   className="input-field"
-                  placeholder="e.g. Ananya Sharma"
                   value={name}
                   onChange={e => setName(e.target.value)}
                 />
@@ -160,8 +145,8 @@ export default function CustomerAuthPage() {
               <input
                 type="email"
                 required
+                placeholder="e.g. priya@example.com"
                 className="input-field"
-                placeholder="your@email.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
@@ -172,55 +157,36 @@ export default function CustomerAuthPage() {
               <input
                 type="password"
                 required
-                className="input-field"
                 placeholder="••••••••"
+                className="input-field"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
-              {mode === 'register' && (
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
-                  At least 6 characters (you will add delivery address when checking out)
-                </span>
-              )}
             </div>
 
             <button
               type="submit"
               className="btn"
-              style={{ width: '100%', padding: '14px', fontSize: '1rem', marginTop: '10px' }}
+              style={{ width: '100%', marginTop: '10px', padding: '12px' }}
               disabled={loading}
             >
-              {loading ? (mode === 'login' ? 'Signing in...' : 'Creating Account...') : (mode === 'login' ? 'Sign In' : 'Create Account')}
+              {loading ? 'Please wait...' : (mode === 'login' ? 'Sign In 🌸' : 'Create Account 🌸')}
             </button>
           </form>
 
-          <div style={{ marginTop: '25px', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            {mode === 'login' ? (
-              <p>
-                Don't have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('register')}
-                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer' }}
-                >
-                  Create one now
-                </button>
-              </p>
-            ) : (
-              <p>
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('login')}
-                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer' }}
-                >
-                  Sign In
-                </button>
-              </p>
-            )}
-          </div>
         </div>
       </main>
+    </>
+  )
+}
+
+export default function CustomerAuthPage() {
+  return (
+    <>
+      <Header />
+      <Suspense fallback={<div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>Loading...</div>}>
+        <CustomerAuthContent />
+      </Suspense>
       <Footer />
     </>
   )

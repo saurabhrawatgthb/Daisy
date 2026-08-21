@@ -3,54 +3,58 @@ import type { NextRequest } from "next/server"
 import { getSession } from "@/lib/auth"
 
 export async function middleware(request: NextRequest) {
-
   const { pathname } = request.nextUrl
 
-  // Protected routes
+  // ─── 1. ADMIN ROUTE PROTECTION ───────────────────────────────────────────
   const isAdminPage = pathname.startsWith("/admin")
   const isAdminAPI = pathname.startsWith("/api/admin")
-
-  // Allow login and registration routes without prior authentication
   const isPublicAdminRoute =
     pathname === "/admin/login" ||
     pathname === "/api/admin/login" ||
-    pathname === "/api/admin/register"
+    pathname === "/api/admin/register" ||
+    pathname === "/api/admin/logout"
 
-  // Check only protected routes
   if ((isAdminPage || isAdminAPI) && !isPublicAdminRoute) {
-
     const sessionCookie = request.cookies.get("session")
 
-    // No session cookie
     if (!sessionCookie) {
-
       if (isAdminAPI) {
-        return NextResponse.json(
-          { error: "Unauthorized" },
-          { status: 401 }
-        )
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
       }
-
-      return NextResponse.redirect(
-        new URL("/admin/login", request.url)
-      )
+      const loginUrl = new URL("/admin/login", request.url)
+      loginUrl.searchParams.set("redirect", pathname)
+      return NextResponse.redirect(loginUrl)
     }
 
-    // Validate session
     const session = await getSession(sessionCookie.value)
-
     if (!session) {
-
       if (isAdminAPI) {
-        return NextResponse.json(
-          { error: "Unauthorized" },
-          { status: 401 }
-        )
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
       }
+      const loginUrl = new URL("/admin/login", request.url)
+      loginUrl.searchParams.set("redirect", pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
 
-      return NextResponse.redirect(
-        new URL("/admin/login", request.url)
-      )
+  // ─── 2. CUSTOMER ACCOUNT ROUTE PROTECTION ────────────────────────────────
+  // If someone shares a link to /my-orders, require login first
+  const isCustomerAccountPage = pathname.startsWith("/my-orders")
+
+  if (isCustomerAccountPage) {
+    const customerCookie = request.cookies.get("customer_session")
+
+    if (!customerCookie) {
+      const loginUrl = new URL("/login", request.url)
+      loginUrl.searchParams.set("redirect", pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    const session = await getSession(customerCookie.value)
+    if (!session) {
+      const loginUrl = new URL("/login", request.url)
+      loginUrl.searchParams.set("redirect", pathname)
+      return NextResponse.redirect(loginUrl)
     }
   }
 
@@ -60,6 +64,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/admin/:path*",
-    "/api/admin/:path*"
+    "/api/admin/:path*",
+    "/my-orders/:path*"
   ]
 }
