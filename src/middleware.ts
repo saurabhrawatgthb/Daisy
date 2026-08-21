@@ -10,13 +10,14 @@ export async function middleware(request: NextRequest) {
   const isAdminPage = pathname.startsWith("/admin")
   const isAdminAPI = pathname.startsWith("/api/admin")
 
-  // Allow login routes without authentication
-  const isLoginRoute =
+  // Allow login and registration routes without prior authentication
+  const isPublicAdminRoute =
     pathname === "/admin/login" ||
-    pathname === "/api/admin/login"
+    pathname === "/api/admin/login" ||
+    pathname === "/api/admin/register"
 
   // Check only protected routes
-  if ((isAdminPage || isAdminAPI) && !isLoginRoute) {
+  if ((isAdminPage || isAdminAPI) && !isPublicAdminRoute) {
 
     const sessionCookie = request.cookies.get("session")
 
