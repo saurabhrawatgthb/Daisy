@@ -117,26 +117,34 @@ export default function Checkout() {
   const discountedSubtotal = Math.max(0, subtotal - discountAmount)
   const total = discountedSubtotal + shippingFee
 
-  // Handle Coupon Application
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  // Handle Coupon Application (Dynamically validated against live Database coupons)
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault()
     setCouponError('')
     const code = couponInput.trim().toUpperCase()
 
     if (!code) return
 
-    if (PROMO_CODES[code]) {
-      const promo = PROMO_CODES[code]
-      let calcDiscount = 0
-      if (promo.type === 'percent') {
-        calcDiscount = Math.round((subtotal * promo.value) / 100)
-      } else {
-        calcDiscount = Math.min(subtotal, promo.value)
+    try {
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, subtotal })
+      })
+      const data = await res.json()
+
+      if (!res.ok || !data.valid) {
+        throw new Error(data.error || 'Invalid or expired coupon code')
       }
-      setAppliedCoupon({ code, discount: calcDiscount, label: promo.label })
+
+      setAppliedCoupon({
+        code: data.code,
+        discount: data.discount,
+        label: data.label
+      })
       setCouponInput('')
-    } else {
-      setCouponError('Invalid coupon code. Try DAISY10 or WELCOME50')
+    } catch (err: any) {
+      setCouponError(err.message || 'Invalid coupon code')
     }
   }
 

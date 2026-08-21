@@ -75,6 +75,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </span>
             )}
           </Link>
+          <Link href="/admin/coupons" className={`nav-link ${pathname.includes('/admin/coupons') ? 'active' : ''}`}>
+            🎟️ Promo Coupons
+          </Link>
           <Link href="/admin/settings" className={`nav-link ${pathname === '/admin/settings' ? 'active' : ''}`}>
             ⚙️ Settings
           </Link>

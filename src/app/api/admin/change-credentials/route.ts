@@ -123,3 +123,53 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to fetch admin profile' }, { status: 500 })
   }
 }
+
+// DELETE — Permanently delete admin account
+export async function DELETE(request: Request) {
+  try {
+    const cookieStore = await cookies()
+    const sessionCookie = cookieStore.get('session')
+
+    if (!sessionCookie) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const session = await getSession(sessionCookie.value)
+    if (!session || !session.userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { confirmPassword } = await request.json()
+    if (!confirmPassword) {
+      return NextResponse.json({ error: 'Password confirmation is required to delete your account' }, { status: 400 })
+    }
+
+    const adminUser = await prisma.user.findUnique({
+      where: { id: session.userId as string }
+    })
+
+    if (!adminUser) {
+      return NextResponse.json({ error: 'Admin user not found' }, { status: 404 })
+    }
+
+    const isValid = await verifyPassword(confirmPassword, adminUser.password)
+    if (!isValid) {
+      return NextResponse.json({ error: 'Incorrect password' }, { status: 400 })
+    }
+
+    // Delete admin account
+    await prisma.user.delete({
+      where: { id: adminUser.id }
+    })
+
+    const response = NextResponse.json({ success: true, message: 'Admin account deleted successfully' })
+    response.cookies.set('session', '', { maxAge: 0, path: '/' })
+    return response
+  } catch (error: unknown) {
+    console.error('[Delete Admin Account Error]:', error)
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : 'Failed to delete account'
+    }, { status: 500 })
+  }
+}
+

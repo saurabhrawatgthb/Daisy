@@ -397,6 +397,91 @@
 }
 
 /* =====================
+   ANIMATIONS & MICRO-INTERACTIONS
+   ===================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatBadge {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(178, 88, 154, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 25px rgba(178, 88, 154, 0.6);
+  }
+}
+
+@keyframes shimmerGlow {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Page & Card Entrances */
+.main-content, .glass-card, .page-header {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* Button Micro-interactions */
+.btn {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(178, 88, 154, 0.35);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Product Card Smooth Hover Zoom */
+.product-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 16px 35px rgba(178, 88, 154, 0.18);
+}
+
+.product-image img {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+/* Interactive Tabs & Badges */
+.cart-count {
+  animation: floatBadge 2.5s ease-in-out infinite;
+}
+
+/* =====================
    RESPONSIVE — MOBILE (≤480px)
    ===================== */
 @media (max-width: 480px) {
@@ -412,3 +497,4 @@
   .product-header-title { font-size: 2rem !important; }
   .product-header-price { font-size: 2rem !important; }
 }
+

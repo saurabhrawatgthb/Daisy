@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import '../store.css'
 
 export default function CustomerAuthPage() {
@@ -11,9 +10,6 @@ export default function CustomerAuthPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
-  const [pincode, setPincode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -42,7 +38,7 @@ export default function CustomerAuthPage() {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password, phone, address, pincode })
+          body: JSON.stringify({ name, email, password })
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || 'Registration failed')
@@ -69,7 +65,7 @@ export default function CustomerAuthPage() {
       </div>
 
       <main className="main-content container" style={{ padding: '50px 20px', minHeight: '60vh' }}>
-        <div className="glass-card" style={{ maxWidth: 500, margin: '0 auto', padding: '40px' }}>
+        <div className="glass-card" style={{ maxWidth: 460, margin: '0 auto', padding: '40px' }}>
           
           {/* Tab Switcher */}
           <div style={{
@@ -146,31 +142,17 @@ export default function CustomerAuthPage() {
 
           <form onSubmit={handleSubmit}>
             {mode === 'register' && (
-              <>
-                <div className="input-group">
-                  <label className="input-label">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    className="input-field"
-                    placeholder="Your Name"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                  />
-                </div>
-
-                <div className="input-group">
-                  <label className="input-label">Phone Number</label>
-                  <input
-                    type="tel"
-                    required
-                    className="input-field"
-                    placeholder="e.g. 9876543210"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                  />
-                </div>
-              </>
+              <div className="input-group">
+                <label className="input-label">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  className="input-field"
+                  placeholder="e.g. Ananya Sharma"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
+              </div>
             )}
 
             <div className="input-group">
@@ -197,36 +179,10 @@ export default function CustomerAuthPage() {
               />
               {mode === 'register' && (
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
-                  At least 6 characters
+                  At least 6 characters (you will add delivery address when checking out)
                 </span>
               )}
             </div>
-
-            {mode === 'register' && (
-              <>
-                <div className="input-group">
-                  <label className="input-label">Default Shipping Address (Optional)</label>
-                  <textarea
-                    rows={2}
-                    className="input-field"
-                    placeholder="House, Street, Locality"
-                    value={address}
-                    onChange={e => setAddress(e.target.value)}
-                  />
-                </div>
-
-                <div className="input-group">
-                  <label className="input-label">Pincode (Optional)</label>
-                  <input
-                    type="text"
-                    className="input-field"
-                    placeholder="e.g. 248001"
-                    value={pincode}
-                    onChange={e => setPincode(e.target.value)}
-                  />
-                </div>
-              </>
-            )}
 
             <button
               type="submit"

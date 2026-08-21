@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import '../dashboard.css'
 
 export default function AdminSettings() {
@@ -11,8 +12,14 @@ export default function AdminSettings() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
 
+  // Account deletion state
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [deletePassword, setDeletePassword] = useState('')
+  const [deletingAccount, setDeletingAccount] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+  const router = useRouter()
+
   useEffect(() => {
-    // Fetch current admin profile
     const fetchProfile = async () => {
       try {
         const res = await fetch('/api/admin/change-credentials')
@@ -81,11 +88,43 @@ export default function AdminSettings() {
     }
   }
 
+  const handleDeleteAccount = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setDeleteError('')
+
+    if (!deletePassword) {
+      setDeleteError('Password is required to delete your account')
+      return
+    }
+
+    setDeletingAccount(true)
+    try {
+      const res = await fetch('/api/admin/change-credentials', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmPassword: deletePassword })
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to delete account')
+
+      alert('Admin account deleted. Redirecting to login page...')
+      router.push('/admin/login')
+      router.refresh()
+    } catch (err: any) {
+      setDeleteError(err.message || 'Failed to delete account')
+    } finally {
+      setDeletingAccount(false)
+    }
+  }
+
   return (
     <div className="dashboard-wrapper">
       <h1 className="page-title">Admin Account Settings</h1>
 
-      <div style={{ maxWidth: '650px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '650px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '30px' }}>
+
+        {/* Credentials Card */}
         <div className="glass-card" style={{ padding: '35px' }}>
           <h2 style={{ fontSize: '1.4rem', marginBottom: '10px', color: 'var(--primary-dark)' }}>
             🔒 Change Admin Credentials
@@ -188,7 +227,88 @@ export default function AdminSettings() {
             </button>
           </form>
         </div>
+
+        {/* Danger Zone: Delete Admin Account */}
+        <div className="glass-card" style={{ padding: '30px', border: '1px solid #fadbd8', background: '#fffcfc' }}>
+          <h2 style={{ fontSize: '1.2rem', color: '#c0392b', marginBottom: '8px' }}>
+            ⚠️ Danger Zone
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '18px' }}>
+            Permanently delete your admin account and revoke dashboard access.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => { setDeleteModalOpen(true); setDeleteError(''); }}
+            className="btn"
+            style={{ background: '#e74c3c', padding: '10px 20px', fontSize: '0.9rem' }}
+          >
+            🗑️ Delete My Admin Account
+          </button>
+        </div>
+
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}>
+          <div className="glass-card" style={{ maxWidth: '450px', width: '100%', background: '#fff', padding: '30px', borderRadius: '16px' }}>
+            <h3 style={{ color: '#c0392b', margin: '0 0 10px' }}>Confirm Account Deletion</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '20px', lineHeight: 1.5 }}>
+              Are you sure you want to permanently delete your administrator account? You will immediately lose access to this admin dashboard.
+            </p>
+
+            {deleteError && (
+              <div style={{ background: '#fdedec', color: '#e74c3c', padding: '10px', borderRadius: '6px', fontSize: '0.85rem', marginBottom: '15px' }}>
+                {deleteError}
+              </div>
+            )}
+
+            <form onSubmit={handleDeleteAccount}>
+              <div className="input-group">
+                <label className="input-label">Enter Password to Confirm</label>
+                <input
+                  required
+                  type="password"
+                  className="input-field"
+                  placeholder="Your current password"
+                  value={deletePassword}
+                  onChange={e => setDeletePassword(e.target.value)}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                <button
+                  type="submit"
+                  className="btn"
+                  style={{ background: '#e74c3c', flex: 1, padding: '10px' }}
+                  disabled={deletingAccount}
+                >
+                  {deletingAccount ? 'Deleting...' : 'Yes, Delete Account'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeleteModalOpen(false)}
+                  className="btn btn-outline"
+                  style={{ flex: 1, padding: '10px' }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

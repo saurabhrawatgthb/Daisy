@@ -69,6 +69,27 @@ export async function ensureDatabaseSchema() {
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT "Review_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
+
+      -- Coupon Table
+      CREATE TABLE IF NOT EXISTS "Coupon" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "code" TEXT NOT NULL UNIQUE,
+        "discountType" TEXT NOT NULL DEFAULT 'percent',
+        "discountValue" DOUBLE PRECISION NOT NULL,
+        "minOrder" DOUBLE PRECISION NOT NULL DEFAULT 0,
+        "isActive" BOOLEAN NOT NULL DEFAULT true,
+        "expiresAt" TIMESTAMP(3),
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Seed starter coupons if none exist
+      INSERT INTO "Coupon" ("id", "code", "discountType", "discountValue", "minOrder", "isActive", "createdAt", "updatedAt")
+      VALUES 
+        ('c_daisy10', 'DAISY10', 'percent', 10, 0, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+        ('c_welcome50', 'WELCOME50', 'flat', 50, 299, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+        ('c_festive20', 'FESTIVE20', 'percent', 20, 500, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      ON CONFLICT ("code") DO NOTHING;
     `);
     globalForPrisma.schemaSynced = true;
   } catch (e) {

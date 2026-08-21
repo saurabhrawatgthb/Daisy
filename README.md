@@ -21,18 +21,22 @@
 - **🖨️ Printable Tax Invoices**: Download/print formatted order receipts directly from Tracking and Order History.
 
 ### 👤 Customer Accounts & Multi-Address Book
-- **Email & Password Authentication**: Secure customer registration and login at `/login`.
+- **Streamlined Fast Sign-Up**: Quick registration with just Name, Email, and Password (no upfront address required until checkout).
 - **📍 Multi-Address Book**: Save and manage multiple delivery addresses (Home, Work, Other) with instant selection during checkout or from `/my-orders`.
 - **Connected Orders (`/my-orders`)**: Logged-in customers automatically see their complete order history, payment methods, and live fulfillment statuses.
 
 ### 📊 Admin Dashboard & Management Portal
 - **Dashboard Overview (`/admin`)**: Real-time stats for Total Products, Total Orders, and Total Revenue (aggregates across `Paid`, `Shipped`, and `Delivered` orders).
-- **Order Management (`/admin/orders`)**:
-  - View all orders with customer details, order items, payment method (`COD` vs `UPI`), and UTR numbers.
+- **Full Order Details & Dispatching (`/admin/orders`)**:
+  - View full delivery destinations (customer phone, full street address, pincode).
+  - Mode of payment (`COD` vs `UPI` with UTR/Transaction ID).
+  - Itemized product details with quantities, unit prices, and promo discount calculations.
+  - **🔍 Details Modal & Dispatch Slip**: Print packing/dispatch slips with complete recipient info and item breakdown.
   - Update status through full lifecycle: `Pending` → `Payment Submitted` → `Paid` → `Shipped` → `Delivered` (or `Rejected`).
   - **🗑️ Order Deletion**: Permanently remove orders from both admin view and customer tracking with cascading cleanup.
+- **🎟️ Promo Coupon Management (`/admin/coupons`)**: Create, toggle active/inactive status, and delete discount codes (`percent` or `flat` amount with min-order thresholds) with real-time checkout validation.
 - **Product Management (`/admin/products`)**: Add new products, upload images, and **permanently delete products** with cascading cleanup so deleted products never reappear.
-- **⚙️ Admin Account Settings (`/admin/settings`)**: Securely update admin email address and password with current password verification.
+- **⚙️ Admin Account Settings (`/admin/settings`)**: Securely update admin email address and password, or permanently delete the admin account in the **Danger Zone**.
 - **🔑 Admin Secret Authorization Code**: Multi-admin registration requires a secret code (`ADMIN_SECRET_KEY`) to prevent unauthorized sign-ups.
 
 ### 🔔 Automated Notifications (Customer & Admin)

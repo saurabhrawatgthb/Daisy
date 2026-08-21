@@ -95,3 +95,16 @@ model OrderItem {
   quantity     Int
   price        Float
 }
+
+model Coupon {
+  id            String    @id @default(cuid())
+  code          String    @unique
+  discountType  String    @default("percent") // "percent" or "flat"
+  discountValue Float
+  minOrder      Float     @default(0)
+  isActive      Boolean   @default(true)
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
