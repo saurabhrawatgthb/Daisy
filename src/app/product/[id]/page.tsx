@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import AddToCartButton from './AddToCartButton'
+import ProductReviews from './ProductReviews'
 import '../../store.css'
 
 export const dynamic = 'force-dynamic';
@@ -84,6 +85,9 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
           </div>
 
         </div>
+
+        {/* Customer Reviews & Ratings */}
+        <ProductReviews productId={product.id} />
       </main>
       <Footer />
     </>

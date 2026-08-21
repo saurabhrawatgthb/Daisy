@@ -34,11 +34,39 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
+
+    if (!id) {
+      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 })
+    }
+
+    // 1. Delete associated reviews
+    await prisma.review.deleteMany({
+      where: { productId: id }
+    }).catch(() => {})
+
+    // 2. Set productTitle on orderItems before deleting reference if needed
+    const product = await prisma.product.findUnique({ where: { id } })
+    if (product) {
+      await prisma.orderItem.updateMany({
+        where: { productId: id },
+        data: {
+          productTitle: product.title,
+          productId: null
+        }
+      }).catch(() => {})
+    }
+
+    // 3. Delete the product
     await prisma.product.delete({
       where: { id }
     })
-    return NextResponse.json({ success: true })
+
+    return NextResponse.json({ success: true, message: 'Product deleted successfully' })
   } catch (error: unknown) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to delete product' }, { status: 500 })
+    console.error('[Delete Product Error]:', error)
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : 'Failed to delete product'
+    }, { status: 500 })
   }
 }
+

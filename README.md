@@ -6,21 +6,24 @@
 
 ## ✨ Features
 
-### 🛍️ Customer Storefront & Experience
-- **Aesthetic Glassmorphism UI**: Responsive design with pastel aesthetics and smooth animations.
-- **Product Catalog & Category Filtering**: Browse products with category filtering (Jewellery, Scrunchies, etc.) and detailed product views.
-- **Interactive Shopping Cart**: Client-side persisted cart with live badge counters.
+### 🛍️ Customer Storefront & Shopping Experience
+- **Live Search & Price Sorting**: Real-time keyword search bar and sorting (Featured, Price: Low-to-High, Price: High-to-Low, Newest) on the Shop page.
+- **Product Reviews & Ratings ⭐**: Interactive 1–5 star rating system with verified customer reviews and average rating scorecards.
+- **Wishlist & Favorites ❤️**: Heart favorite items, access dedicated `/wishlist`, and move items directly into the shopping cart.
+- **🎟️ Promo & Coupon Discounts**: Apply coupon discount codes at checkout (`DAISY10` for 10% off, `WELCOME50` for ₹50 off, `FESTIVE20` for 20% off) with dynamic recalculation.
 - **Dual Payment Options**:
   - 📱 **UPI / QR Code**: Direct QR scanning with UTR / Transaction ID submission.
   - 💵 **Cash on Delivery (COD)**: Seamless one-click checkout without UPI requirements.
 - **Free Delivery for Dehradun**: Built-in shipping logic providing free delivery across Dehradun and standard flat rates elsewhere.
-- **Real-Time Order Tracking**: Dedicated `/track` page to check order status using Order ID & Email.
+- **Smart Live Order Tracking (`/track`)**:
+  - **Logged-in Users**: Automatically detects session and displays all active orders with visual interactive progress timelines (**Order Placed** → **Confirmed** → **Shipped** → **Delivered**) without requiring order IDs.
+  - **Guest Users**: Look up orders using Order ID & Email.
+- **🖨️ Printable Tax Invoices**: Download/print formatted order receipts directly from Tracking and Order History.
 
-### 👤 Customer Accounts & Order History
+### 👤 Customer Accounts & Multi-Address Book
 - **Email & Password Authentication**: Secure customer registration and login at `/login`.
-- **Pre-filled Checkout**: Automatically loads user contact details and shipping address during checkout.
+- **📍 Multi-Address Book**: Save and manage multiple delivery addresses (Home, Work, Other) with instant selection during checkout or from `/my-orders`.
 - **Connected Orders (`/my-orders`)**: Logged-in customers automatically see their complete order history, payment methods, and live fulfillment statuses.
-- **Guest Lookup**: Customers can also view order status without an account using Email & Phone.
 
 ### 📊 Admin Dashboard & Management Portal
 - **Dashboard Overview (`/admin`)**: Real-time stats for Total Products, Total Orders, and Total Revenue (aggregates across `Paid`, `Shipped`, and `Delivered` orders).
@@ -28,8 +31,9 @@
   - View all orders with customer details, order items, payment method (`COD` vs `UPI`), and UTR numbers.
   - Update status through full lifecycle: `Pending` → `Payment Submitted` → `Paid` → `Shipped` → `Delivered` (or `Rejected`).
   - **🗑️ Order Deletion**: Permanently remove orders from both admin view and customer tracking with cascading cleanup.
-- **Product Management (`/admin/products`)**: Add new products with image uploads and manage catalog items.
-- **⚙️ Admin Account Settings (`/admin/settings`)**: Securely update the admin email address and password with current password verification.
+- **Product Management (`/admin/products`)**: Add new products, upload images, and **permanently delete products** with cascading cleanup so deleted products never reappear.
+- **⚙️ Admin Account Settings (`/admin/settings`)**: Securely update admin email address and password with current password verification.
+- **🔑 Admin Secret Authorization Code**: Multi-admin registration requires a secret code (`ADMIN_SECRET_KEY`) to prevent unauthorized sign-ups.
 
 ### 🔔 Automated Notifications (Customer & Admin)
 - **Customer Notifications**:

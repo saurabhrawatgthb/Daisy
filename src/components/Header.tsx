@@ -91,6 +91,10 @@ export default function Header() {
             </Link>
           )}
 
+          <Link href="/wishlist" title="My Wishlist" style={{ color: 'var(--primary-dark)', fontSize: '1.2rem', textDecoration: 'none', position: 'relative', display: 'flex', alignItems: 'center' }}>
+            ❤️
+          </Link>
+
           <Link href="/cart" className="cart-link">
             Cart <CartCount />
           </Link>
@@ -115,6 +119,7 @@ export default function Header() {
           <Link href="/shop?category=Jewellery">Jewellery</Link>
           <Link href="/shop?category=Scrunchies">Scrunchies</Link>
           <Link href="/shop">All Products</Link>
+          <Link href="/wishlist">My Wishlist ❤️</Link>
           <Link href="/my-orders">My Orders</Link>
           <Link href="/track">Track Order</Link>
           {user ? (

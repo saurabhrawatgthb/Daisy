@@ -24,13 +24,23 @@ export default function AdminProducts() {
     fetchProducts()
   }, [])
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) return
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to permanently delete "${title}"? This cannot be undone.`)) return
+    setDeletingId(id)
     try {
-      await fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
-      setProducts(products.filter((p) => p.id !== id))
-    } catch (e) {
-      console.error(e)
+      const res = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to delete product')
+      
+      setProducts(prev => prev.filter((p) => p.id !== id))
+      alert('Product deleted successfully!')
+    } catch (e: any) {
+      alert(e.message || 'Failed to delete product')
+      fetchProducts()
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -71,7 +81,14 @@ export default function AdminProducts() {
                   <td>{product.category}</td>
                   <td>₹{product.price}</td>
                   <td>
-                    <button onClick={() => handleDelete(product.id)} className="btn-outline" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>Delete</button>
+                    <button
+                      onClick={() => handleDelete(product.id, product.title)}
+                      disabled={deletingId === product.id}
+                      className="btn-outline"
+                      style={{ padding: '6px 12px', fontSize: '0.85rem', color: '#e74c3c', borderColor: '#e74c3c' }}
+                    >
+                      {deletingId === product.id ? 'Deleting...' : 'Delete'}
+                    </button>
                   </td>
                 </tr>
               ))}

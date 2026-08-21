@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: Request) {
   try {
     const data = await request.json()
-    const { items, customerDetails, paymentMethod = 'UPI' } = data
+    const { items, customerDetails, paymentMethod = 'UPI', couponCode, discountAmount = 0 } = data
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 })
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
         totalAmount += product.price * item.quantity
         orderItemsData.push({
           productId: product.id,
+          productTitle: product.title,
           quantity: item.quantity,
           price: product.price
         })
@@ -43,7 +44,8 @@ export async function POST(request: Request) {
     // Shipping calculation (Free for Dehradun, ₹30 otherwise)
     const isDehradun = customerDetails.address?.toLowerCase().includes('dehradun')
     const shippingFee = (totalAmount === 0 || isDehradun) ? 0 : 30
-    const finalAmount = totalAmount + shippingFee
+    const discountedTotal = Math.max(0, totalAmount - (Number(discountAmount) || 0))
+    const finalAmount = discountedTotal + shippingFee
 
     // Check if user is logged in via customer_session cookie
     const cookieStore = await cookies()
@@ -68,6 +70,8 @@ export async function POST(request: Request) {
         customerAddress: customerDetails.address,
         totalAmount: finalAmount,
         paymentMethod: paymentMethod === 'COD' ? 'COD' : 'UPI',
+        couponCode: couponCode || null,
+        discountAmount: Number(discountAmount) || 0,
         status: 'Pending',
         orderItems: { create: orderItemsData }
       }
