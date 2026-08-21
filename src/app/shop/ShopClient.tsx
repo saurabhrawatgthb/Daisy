@@ -14,11 +14,19 @@ type Product = {
 }
 
 export default function ShopClient({ initialProducts, initialCategory }: { initialProducts: Product[]; initialCategory?: string }) {
+  const searchParams = useSearchParams()
+  const queryCat = searchParams.get('category')
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory || 'All')
+  const [selectedCategory, setSelectedCategory] = useState(queryCat || initialCategory || 'All')
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'newest'>('featured')
   const [wishlistIds, setWishlistIds] = useState<string[]>([])
   const router = useRouter()
+
+  useEffect(() => {
+    if (queryCat) {
+      setSelectedCategory(queryCat)
+    }
+  }, [queryCat])
 
   useEffect(() => {
     try {
@@ -67,35 +75,20 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
     }
   }
 
-  const quickAddToCart = (e: React.MouseEvent, product: Product) => {
-    e.preventDefault()
-    e.stopPropagation()
-
-    try {
-      const cart = JSON.parse(localStorage.getItem('daisy_cart') || '[]')
-      const existing = cart.find((i: any) => i.productId === product.id)
-      if (existing) {
-        existing.quantity += 1
-      } else {
-        cart.push({
-          productId: product.id,
-          title: product.title,
-          price: product.price,
-          imageUrl: product.imageUrl,
-          quantity: 1
-        })
-      }
-      localStorage.setItem('daisy_cart', JSON.stringify(cart))
-      window.dispatchEvent(new Event('cartUpdated'))
-      alert(`"${product.title}" added to cart! 🛍️`)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
   const filteredProducts = useMemo(() => {
+    const normalize = (cat: string) => {
+      const c = (cat || '').toLowerCase().trim()
+      if (c.includes('jewel')) return 'jewellery'
+      if (c.includes('scrunch')) return 'scrunchies'
+      if (c.includes('claw')) return 'claws'
+      return c
+    }
+
+    const target = normalize(selectedCategory)
+
     return initialProducts.filter(p => {
-      const matchesCat = selectedCategory === 'All' || p.category.toLowerCase() === selectedCategory.toLowerCase()
+      const pCat = normalize(p.category)
+      const matchesCat = target === 'all' || pCat === target || pCat.includes(target) || target.includes(pCat)
       const matchesSearch = !searchTerm ||
         p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -109,69 +102,57 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
     })
   }, [initialProducts, selectedCategory, searchTerm, sortBy])
 
-  const categories = ['All', 'Jewellery', 'Scrunchies', 'Claws']
+  const categories = [
+    { key: 'All', label: '🌸 All Products' },
+    { key: 'Jewellery', label: '💍 Jewellery' },
+    { key: 'Scrunchies', label: '🎀 Scrunchies' },
+    { key: 'Claws', label: '✨ Hair Claws' }
+  ]
 
   return (
-    <main className="main-content container" style={{ padding: '40px 20px', display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
+    <main className="main-content container shop-page-container">
 
-      {/* Sidebar Filters */}
-      <aside className="shop-filters" style={{ width: '250px', flexShrink: 0 }}>
-        <div className="glass-card" style={{ padding: '25px', position: 'sticky', top: '100px' }}>
-          <h3 style={{ marginBottom: '20px', color: 'var(--primary-dark)', fontSize: '1.2rem' }}>Categories</h3>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {categories.map(cat => (
-              <li key={cat} style={{ marginBottom: '12px' }}>
+      {/* Sidebar / Mobile Pill Filter */}
+      <aside className="shop-filters">
+        <div className="glass-card shop-filters-card">
+          <h3 className="shop-filters-title">Categories</h3>
+          <div className="shop-category-list">
+            {categories.map(cat => {
+              const isSelected = selectedCategory.toLowerCase().includes(cat.key.toLowerCase()) ||
+                (cat.key === 'All' && selectedCategory.toLowerCase() === 'all')
+              return (
                 <button
-                  onClick={() => setSelectedCategory(cat)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    textAlign: 'left',
-                    width: '100%',
-                    padding: '6px 10px',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontWeight: selectedCategory === cat ? 700 : 400,
-                    color: selectedCategory === cat ? 'var(--primary-dark)' : 'var(--text-main)',
-                    backgroundColor: selectedCategory === cat ? 'var(--bg-light)' : 'transparent',
-                    fontSize: '0.95rem'
-                  }}
+                  key={cat.key}
+                  onClick={() => setSelectedCategory(cat.key)}
+                  className={`shop-category-btn ${isSelected ? 'active' : ''}`}
                 >
-                  {cat === 'All' ? '🌸 All Products' : cat === 'Jewellery' ? '💍 Anti-tarnish Jewellery' : cat === 'Scrunchies' ? '🎀 Scrunchies' : '✨ Hair Claws'}
+                  {cat.label}
                 </button>
-              </li>
-            ))}
-          </ul>
+              )
+            })}
+          </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="shop-content" style={{ flex: 1 }}>
+      {/* Main Shop Content Area */}
+      <div className="shop-content">
 
         {/* Search and Sort Toolbar */}
-        <div className="glass-card" style={{
-          padding: '16px 20px',
-          marginBottom: '25px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '15px'
-        }}>
+        <div className="glass-card shop-toolbar">
           {/* Search Box */}
-          <div style={{ flex: '1 1 250px', position: 'relative' }}>
+          <div className="shop-search-wrapper">
             <input
               type="text"
               placeholder="🔍 Search jewellery, scrunchies, claws..."
-              className="input-field"
-              style={{ margin: 0, padding: '10px 14px', fontSize: '0.9rem' }}
+              className="input-field shop-search-input"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#999', cursor: 'pointer' }}
+                className="shop-search-clear"
+                aria-label="Clear search"
               >
                 ✕
               </button>
@@ -179,13 +160,12 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
           </div>
 
           {/* Sort Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>Sort by:</span>
+          <div className="shop-sort-wrapper">
+            <span className="shop-sort-label">Sort:</span>
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as any)}
-              className="input-field"
-              style={{ margin: 0, padding: '8px 12px', fontSize: '0.88rem', width: 'auto' }}
+              className="input-field shop-sort-select"
             >
               <option value="featured">Featured</option>
               <option value="price-asc">Price: Low to High</option>
@@ -196,8 +176,9 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
         </div>
 
         {/* Results Counter */}
-        <div style={{ marginBottom: '15px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+        <div className="shop-results-counter">
           Showing <strong>{filteredProducts.length}</strong> product{filteredProducts.length === 1 ? '' : 's'}
+          {selectedCategory !== 'All' && <span> in <strong>{selectedCategory}</strong></span>}
           {searchTerm && <span> matching "<strong>{searchTerm}</strong>"</span>}
         </div>
 
@@ -207,13 +188,20 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
             <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🔍</div>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '8px', color: 'var(--primary-dark)' }}>No products found</h2>
             <p style={{ color: 'var(--text-muted)' }}>Try adjusting your search keyword or selected category filter.</p>
+            <button
+              onClick={() => { setSelectedCategory('All'); setSearchTerm(''); }}
+              className="btn-outline"
+              style={{ marginTop: '20px' }}
+            >
+              Reset Filters
+            </button>
           </div>
         ) : (
           <div className="shop-product-grid">
             {filteredProducts.map((product) => {
               const isWishlisted = wishlistIds.includes(product.id)
               return (
-                <div className="product-card" key={product.id} style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                <div className="product-card" key={product.id}>
 
                   {/* Wishlist Heart Button */}
                   <button
@@ -221,31 +209,35 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
                     className="wishlist-btn-interactive"
                     style={{
                       position: 'absolute',
-                      top: '12px',
-                      right: '12px',
+                      top: '10px',
+                      right: '10px',
                       zIndex: 3,
-                      background: 'rgba(255, 255, 255, 0.9)',
+                      background: 'rgba(255, 255, 255, 0.92)',
                       backdropFilter: 'blur(6px)',
                       border: '1px solid rgba(255, 255, 255, 0.8)',
                       borderRadius: '50%',
-                      width: '36px',
-                      height: '36px',
+                      width: '34px',
+                      height: '34px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      fontSize: '1.2rem',
-                      boxShadow: '0 2px 8px rgba(212, 67, 139, 0.15)'
+                      fontSize: '1.1rem',
+                      boxShadow: '0 2px 8px rgba(212, 67, 139, 0.18)'
                     }}
                     title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
                   >
                     {isWishlisted ? '❤️' : '🤍'}
                   </button>
 
-                  <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
                     <div className="product-image">
                       {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.title} />
+                        <img
+                          src={product.imageUrl}
+                          alt={product.title}
+                          loading="lazy"
+                        />
                       ) : (
                         <div className="placeholder">No Image</div>
                       )}
@@ -257,15 +249,6 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
                     </div>
                   </Link>
 
-                  <div style={{ padding: '0 15px 15px', marginTop: 'auto' }}>
-                    <button
-                      onClick={e => quickAddToCart(e, product)}
-                      className="btn btn-outline"
-                      style={{ width: '100%', padding: '8px', fontSize: '0.85rem' }}
-                    >
-                      + Quick Add 🛍️
-                    </button>
-                  </div>
                 </div>
               )
             })}
@@ -273,6 +256,7 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
         )}
 
       </div>
+
     </main>
   )
 }
