@@ -1,10 +1,17 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import SocialIcons from '@/components/SocialIcons'
 
 export const metadata: Metadata = {
-  title: 'Daisy | Premium Accessories',
-  description: 'Anti-tarnish jewellery, scrunchies, and beautiful accessories for women.',
+  title: 'Daisy | Premium Accessories & Jewellery',
+  description: 'Handcrafted anti-tarnish jewellery, satin scrunchies, and beautiful accessories for women.',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#f8c8dc',
 }
 
 export default function RootLayout({
@@ -15,7 +22,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        {/* Ambient Floating Gradient Orbs for Frosted Glass Effect */}
+        <div className="ambient-background-container" aria-hidden="true">
+          <div className="ambient-orb orb-1"></div>
+          <div className="ambient-orb orb-2"></div>
+          <div className="ambient-orb orb-3"></div>
+          <div className="ambient-orb orb-4"></div>
+        </div>
+        <div className="app-content-wrapper">
+          {children}
+        </div>
         <SocialIcons />
       </body>
     </html>
