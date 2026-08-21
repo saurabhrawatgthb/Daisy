@@ -1,19 +1,31 @@
+'use client'
 import React from 'react';
 
 export default function SocialIcons() {
   return (
-    <div style={{ position: 'fixed', bottom: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: '16px', zIndex: 50 }}>
+    <div style={{ position: 'fixed', bottom: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: '14px', zIndex: 100 }}>
       <a
-        href="https://wa.me/+919286749037" // Replace with actual WhatsApp number
+        href="https://wa.me/+919286749037"
         target="_blank"
         rel="noopener noreferrer"
-        style={{ animationDuration: '3s', background: '#25D366', color: 'white', padding: '12px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.25)', transition: 'transform 0.3s' }}
+        className="social-floating-icon whatsapp-icon"
+        style={{
+          background: '#25D366',
+          color: 'white',
+          padding: '12px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 16px rgba(37, 211, 102, 0.35)',
+          transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease'
+        }}
         aria-label="Chat with us on WhatsApp"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          height="28"
+          width="26"
+          height="26"
           fill="currentColor"
           viewBox="0 0 16 16"
         >
@@ -22,16 +34,27 @@ export default function SocialIcons() {
       </a>
 
       <a
-        href="https://instagram.com/the_daisy_" // Replace with actual Instagram link
+        href="https://instagram.com/the_daisy_"
         target="_blank"
         rel="noopener noreferrer"
-        style={{ animationDuration: '3s', animationDelay: '1.5s', background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: 'white', padding: '12px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(0,0,0,0.25)', transition: 'transform 0.3s' }}
+        className="social-floating-icon instagram-icon"
+        style={{
+          background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+          color: 'white',
+          padding: '12px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 16px rgba(220, 39, 67, 0.35)',
+          transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease'
+        }}
         aria-label="Follow us on Instagram"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="28"
-          height="28"
+          width="26"
+          height="26"
           fill="currentColor"
           viewBox="0 0 16 16"
         >

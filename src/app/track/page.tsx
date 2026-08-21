@@ -220,7 +220,7 @@ export default function TrackOrder() {
               height: '100%',
               background: 'var(--primary, #b2589a)',
               width: `${Math.min(100, Math.max(0, (currentStep / (ORDER_STEPS.length - 1)) * 100))}%`,
-              transition: 'width 0.4s ease'
+              transition: 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
             }}></div>
           </div>
 
@@ -238,17 +238,19 @@ export default function TrackOrder() {
                 textAlign: 'center'
               }}>
                 <div style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '42px',
+                  height: '42px',
                   borderRadius: '50%',
-                  background: isCompleted ? 'var(--primary, #b2589a)' : '#f5e8f3',
-                  color: isCompleted ? '#fff' : '#888',
+                  background: isCompleted ? 'var(--primary)' : '#fce4ec',
+                  color: isCompleted ? '#fff' : '#999',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '1.2rem',
-                  border: isCurrent ? '3px solid #6b1e56' : 'none',
-                  boxShadow: isCompleted ? '0 2px 8px rgba(178,88,154,0.3)' : 'none'
+                  border: isCurrent ? '3px solid var(--primary-dark)' : 'none',
+                  boxShadow: isCompleted ? '0 4px 12px rgba(212, 67, 139, 0.35)' : 'none',
+                  animation: isCurrent ? 'pulseGlow 2s infinite' : 'none',
+                  transition: 'all 0.3s ease'
                 }}>
                   {step.icon}
                 </div>

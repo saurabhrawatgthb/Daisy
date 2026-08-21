@@ -218,14 +218,15 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
                   {/* Wishlist Heart Button */}
                   <button
                     onClick={e => toggleWishlist(e, product)}
+                    className="wishlist-btn-interactive"
                     style={{
                       position: 'absolute',
                       top: '12px',
                       right: '12px',
                       zIndex: 3,
-                      background: 'rgba(255, 255, 255, 0.85)',
-                      backdropFilter: 'blur(4px)',
-                      border: 'none',
+                      background: 'rgba(255, 255, 255, 0.9)',
+                      backdropFilter: 'blur(6px)',
+                      border: '1px solid rgba(255, 255, 255, 0.8)',
                       borderRadius: '50%',
                       width: '36px',
                       height: '36px',
@@ -234,7 +235,7 @@ export default function ShopClient({ initialProducts, initialCategory }: { initi
                       justifyContent: 'center',
                       cursor: 'pointer',
                       fontSize: '1.2rem',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+                      boxShadow: '0 2px 8px rgba(212, 67, 139, 0.15)'
                     }}
                     title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
                   >

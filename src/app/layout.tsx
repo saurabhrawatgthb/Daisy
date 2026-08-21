@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import SocialIcons from '@/components/SocialIcons'
+import AnimationObserver from '@/components/AnimationObserver'
 
 export const metadata: Metadata = {
   title: 'Daisy | Premium Accessories & Jewellery',
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <AnimationObserver />
         {/* Ambient Floating Gradient Orbs for Frosted Glass Effect */}
         <div className="ambient-background-container" aria-hidden="true">
           <div className="ambient-orb orb-1"></div>

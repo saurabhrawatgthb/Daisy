@@ -251,18 +251,19 @@ export default function AdminSettings() {
 
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && (
-        <div style={{
+        <div className="modal-backdrop-animated" style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(4px)',
+          background: 'rgba(74, 28, 56, 0.65)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 1000,
           padding: '20px'
         }}>
-          <div className="glass-card" style={{ maxWidth: '450px', width: '100%', background: '#fff', padding: '30px', borderRadius: '16px' }}>
+          <div className="glass-card modal-card-animated" style={{ maxWidth: '450px', width: '100%', background: '#fff', padding: '30px', borderRadius: '18px', border: '1px solid #fadbd8', boxShadow: '0 20px 60px rgba(0,0,0,0.25)' }}>
             <h3 style={{ color: '#c0392b', margin: '0 0 10px' }}>Confirm Account Deletion</h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '20px', lineHeight: 1.5 }}>
               Are you sure you want to permanently delete your administrator account? You will immediately lose access to this admin dashboard.

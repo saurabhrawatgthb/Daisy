@@ -41,12 +41,12 @@ export default async function Home() {
       return <p style={{ textAlign: 'center', width: '100%', color: 'var(--text-muted)' }}>{emptyMessage}</p>
     }
     return (
-      <div className="product-grid">
+      <div className="product-grid reveal-stagger">
         {products.map((product: any) => (
           <Link href={`/product/${product.id}`} className="product-card" key={product.id}>
             <div className="product-image">
               {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.title} />
+                <img src={product.imageUrl} alt={product.title} loading="lazy" />
               ) : (
                 <div className="placeholder">No Image</div>
               )}
@@ -67,34 +67,51 @@ export default async function Home() {
       <Header />
       <main className="main-content">
 
-        {/* Elegant Hero Section */}
+        {/* Elegant Hero Section with Ambient Particles */}
         <section className="hero-section">
           <div className="hero-content">
+            <span style={{
+              display: 'inline-block',
+              padding: '4px 14px',
+              borderRadius: '20px',
+              background: 'var(--primary-soft)',
+              color: 'var(--primary-dark)',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              marginBottom: '12px',
+              border: '1px solid var(--border-pink)',
+              animation: 'heroBadgeEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards'
+            }}>
+              🌸 Handcrafted Luxury
+            </span>
             <h1 className="hero-title">Elevate Your Everyday Elegance</h1>
             <p className="hero-subtitle">Discover our exclusive collection of premium anti-tarnish jewellery and handcrafted scrunchies.</p>
             <div className="hero-actions">
-              <Link href="/shop" className="btn hero-btn">Shop Collection</Link>
+              <Link href="/shop" className="btn hero-btn" style={{ padding: '14px 36px', fontSize: '1.05rem' }}>Shop Collection 🛍️</Link>
             </div>
           </div>
           <div className="hero-overlay"></div>
         </section>
 
-        <div className="quick-links-bar container" style={{ marginTop: '-25px', marginBottom: '40px', display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap', position: 'relative', zIndex: 10 }}>
-          <a href="#sec-jewellery" className="quick-link-btn" style={{ background: '#fff', padding: '10px 20px', borderRadius: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', transition: 'transform 0.3s' }}>
+        {/* Quick Links Floating Bar */}
+        <div className="quick-links-bar container" style={{ marginTop: '-25px', marginBottom: '40px', display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap', position: 'relative', zIndex: 10 }}>
+          <a href="#sec-jewellery" className="quick-link-btn" style={{ padding: '10px 22px', borderRadius: '30px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '1.2rem' }}>💎</span> Jewellery
           </a>
-          <a href="#sec-scrunchies" className="quick-link-btn" style={{ background: '#fff', padding: '10px 20px', borderRadius: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', transition: 'transform 0.3s' }}>
+          <a href="#sec-scrunchies" className="quick-link-btn" style={{ padding: '10px 22px', borderRadius: '30px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '1.2rem' }}>🎀</span> Scrunchies
           </a>
-          <a href="#sec-claws" className="quick-link-btn" style={{ background: '#fff', padding: '10px 20px', borderRadius: '30px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', transition: 'transform 0.3s' }}>
-            <span style={{ fontSize: '1.2rem' }}>🌸</span> Claws
+          <a href="#sec-claws" className="quick-link-btn" style={{ padding: '10px 22px', borderRadius: '30px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '1.2rem' }}>🌸</span> Hair Claws
           </a>
         </div>
 
         {/* Categories Showcase */}
-        <section className="categories-section container">
+        <section className="categories-section container reveal-fade-up">
           <h2 className="section-title">Shop by Category</h2>
-          <div className="category-grid">
+          <div className="category-grid reveal-stagger">
             <Link href="/shop?category=Jewellery" className="category-card">
               <div className="category-image placeholder-image jewellry"></div>
               <div className="category-info">
@@ -120,35 +137,35 @@ export default async function Home() {
         </section>
 
         {/* Featured Products */}
-        <section className="featured-section container">
+        <section className="featured-section container reveal-fade-up">
           <h2 className="section-title">New Arrivals</h2>
           {renderProductGrid(featuredProducts, 'More products coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-            <Link href="/shop" className="btn-outline">View All Accessories</Link>
+            <Link href="/shop" className="btn-outline">View All Accessories &rarr;</Link>
           </div>
         </section>
 
-        <section id="sec-jewellery" className="featured-section container" style={{ scrollMarginTop: '100px' }}>
+        <section id="sec-jewellery" className="featured-section container reveal-fade-up" style={{ scrollMarginTop: '100px' }}>
           <h2 className="section-title">Premium Jewellery</h2>
           {renderProductGrid(jewelleryProducts, 'New jewellery coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-            <Link href="/shop?category=Jewellery" className="btn-outline">Shop Jewellery</Link>
+            <Link href="/shop?category=Jewellery" className="btn-outline">Shop Jewellery &rarr;</Link>
           </div>
         </section>
 
-        <section id="sec-scrunchies" className="featured-section container" style={{ scrollMarginTop: '100px' }}>
+        <section id="sec-scrunchies" className="featured-section container reveal-fade-up" style={{ scrollMarginTop: '100px' }}>
           <h2 className="section-title">Scrunchies</h2>
           {renderProductGrid(scrunchiesProducts, 'New scrunchies coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-            <Link href="/shop?category=Scrunchies" className="btn-outline">Shop Scrunchies</Link>
+            <Link href="/shop?category=Scrunchies" className="btn-outline">Shop Scrunchies &rarr;</Link>
           </div>
         </section>
 
-        <section id="sec-claws" className="featured-section container" style={{ scrollMarginTop: '100px' }}>
+        <section id="sec-claws" className="featured-section container reveal-fade-up" style={{ scrollMarginTop: '100px' }}>
           <h2 className="section-title">Hair Claws</h2>
           {renderProductGrid(clawsProducts, 'New hair claws coming soon.')}
           <div style={{ textAlign: 'center', marginTop: '30px' }}>
-            <Link href="/shop?category=Hair Claws" className="btn-outline">Shop Hair Claws</Link>
+            <Link href="/shop?category=Hair Claws" className="btn-outline">Shop Hair Claws &rarr;</Link>
           </div>
         </section>
 

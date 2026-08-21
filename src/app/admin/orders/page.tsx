@@ -383,25 +383,28 @@ export default function AdminOrders() {
 
       {/* FULL ORDER DETAILS MODAL */}
       {selectedOrder && (
-        <div style={{
+        <div className="modal-backdrop-animated" style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(4px)',
+          background: 'rgba(74, 28, 56, 0.65)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 1000,
           padding: '20px'
         }}>
-          <div className="glass-card" style={{
+          <div className="glass-card modal-card-animated" style={{
             maxWidth: '650px',
             width: '100%',
             maxHeight: '90vh',
             overflowY: 'auto',
             background: '#ffffff',
             padding: '30px',
-            borderRadius: '16px'
+            borderRadius: '18px',
+            border: '1px solid var(--border-pink)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.25)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '15px' }}>
               <div>
