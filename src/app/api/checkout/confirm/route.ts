@@ -11,13 +11,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Order ID and UTR number are required' }, { status: 400 })
     }
 
-    await prisma.order.update({
+    const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
         status: 'Payment Submitted',
         paymentIntentId: utrNumber  // reusing paymentIntentId field to store UTR
       }
     })
+
+    try {
+      const { sendPaymentSubmittedNotification } = await import('@/lib/notifications')
+      await sendPaymentSubmittedNotification({
+        orderId: updatedOrder.id,
+        customerName: updatedOrder.customerName,
+        customerEmail: updatedOrder.customerEmail,
+        customerPhone: updatedOrder.customerPhone,
+        utrNumber,
+        totalAmount: updatedOrder.totalAmount
+      })
+    } catch (notifyErr) {
+      console.error('[Payment Notification Error]:', notifyErr)
+    }
 
     return NextResponse.json({ success: true })
   } catch (error: unknown) {

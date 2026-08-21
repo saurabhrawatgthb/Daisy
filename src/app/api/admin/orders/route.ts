@@ -27,6 +27,23 @@ export async function PATCH(request: Request) {
       where: { id: orderId },
       data: { status }
     })
+
+    // Send automated email and SMS notification to customer and admin
+    try {
+      const { sendOrderStatusUpdateNotification } = await import('@/lib/notifications')
+      await sendOrderStatusUpdateNotification({
+        orderId: order.id,
+        customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        customerPhone: order.customerPhone,
+        status: order.status,
+        totalAmount: order.totalAmount,
+        paymentMethod: order.paymentMethod
+      })
+    } catch (notifyErr) {
+      console.error('[Status Notification Error]:', notifyErr)
+    }
+
     return NextResponse.json({ order, success: true })
   } catch (error: unknown) {
     return NextResponse.json({

@@ -18,6 +18,25 @@ interface OrderNotificationParams {
   items: NotificationItem[]
 }
 
+interface StatusUpdateParams {
+  orderId: string
+  customerName: string
+  customerEmail: string
+  customerPhone?: string
+  status: string
+  totalAmount: number
+  paymentMethod?: string
+}
+
+interface PaymentSubmittedParams {
+  orderId: string
+  customerName: string
+  customerEmail: string
+  customerPhone?: string
+  utrNumber: string
+  totalAmount: number
+}
+
 /**
  * Creates a reusable nodemailer transporter based on environment variables
  */
@@ -45,9 +64,7 @@ async function sendSmsNotification(phone: string, message: string) {
   try {
     const formattedPhone = phone.replace(/[^0-9+]/g, '')
     
-    // Check if Fast2SMS or Twilio or Webhook is configured
     if (process.env.FAST2SMS_API_KEY) {
-      // Fast2SMS integration (popular in India)
       await fetch('https://www.fast2sms.com/dev/bulkV2', {
         method: 'POST',
         headers: {
@@ -67,7 +84,6 @@ async function sendSmsNotification(phone: string, message: string) {
     }
 
     if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
-      // Twilio SMS integration
       const twilioAuth = Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64')
       const bodyParams = new URLSearchParams({
         To: formattedPhone.startsWith('+') ? formattedPhone : `+91${formattedPhone}`,
@@ -88,7 +104,6 @@ async function sendSmsNotification(phone: string, message: string) {
     }
 
     if (process.env.SMS_WEBHOOK_URL) {
-      // Generic Webhook integration for custom SMS / WhatsApp gateways
       await fetch(process.env.SMS_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,16 +113,14 @@ async function sendSmsNotification(phone: string, message: string) {
       return
     }
 
-    // Default simulated log when no API key is provided
-    console.log(`[SMS Notification] (Configure FAST2SMS_API_KEY or TWILIO credentials in .env to send live SMS)`)
-    console.log(`To: ${formattedPhone} | Message: ${message}`)
+    console.log(`[SMS Log] To: ${formattedPhone} | Message: ${message}`)
   } catch (err) {
     console.error(`[SMS Error] Failed to send SMS to ${phone}:`, err)
   }
 }
 
 /**
- * Sends both Email and Phone/SMS notifications to Customer and Admin upon order placement
+ * 1. Sends Order Placement confirmation to Customer & Admin
  */
 export async function sendOrderNotifications(params: OrderNotificationParams) {
   const {
@@ -137,10 +150,9 @@ export async function sendOrderNotifications(params: OrderNotificationParams) {
 
   const itemsSummaryText = items.map(i => `${i.quantity}x ${i.title}`).join(', ')
 
-  // ─── 1. SEND CUSTOMER NOTIFICATIONS ─────────────────────────────────────────
+  const transporter = getTransporter()
 
   // Customer Email
-  const transporter = getTransporter()
   if (transporter && customerEmail) {
     try {
       const customerMailHtml = `
@@ -153,7 +165,7 @@ export async function sendOrderNotifications(params: OrderNotificationParams) {
           <div style="padding: 30px 25px;">
             <h2 style="color: #4a2040; margin-top: 0; font-size: 20px;">Thank you for your order, ${customerName}! 🌸</h2>
             <p style="color: #666; font-size: 15px; line-height: 1.5;">
-              We have received your order <strong>#${shortOrderId}</strong>. Here are the details of your purchase:
+              We have received your order <strong>#${shortOrderId}</strong>. Here are your order details:
             </p>
 
             <div style="background: #faf4f9; border-radius: 8px; padding: 15px; margin: 20px 0;">
@@ -176,21 +188,16 @@ export async function sendOrderNotifications(params: OrderNotificationParams) {
             </div>
 
             <div style="margin-bottom: 20px; font-size: 14px; color: #555;">
-              <p style="margin: 4px 0;"><strong>Payment Method:</strong> ${paymentMethod === 'COD' ? '💵 Cash on Delivery (Pay upon arrival)' : '💳 UPI Payment'}</p>
+              <p style="margin: 4px 0;"><strong>Payment Method:</strong> ${paymentMethod === 'COD' ? '💵 Cash on Delivery' : '📱 UPI / Online'}</p>
               <p style="margin: 4px 0;"><strong>Delivery Address:</strong> ${customerAddress} (PIN: ${customerPincode})</p>
               <p style="margin: 4px 0;"><strong>Contact Phone:</strong> ${customerPhone}</p>
             </div>
 
             <div style="text-align: center; margin-top: 30px;">
               <a href="${siteUrl}/track" style="display: inline-block; background: #b2589a; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 25px; font-weight: bold; font-size: 14px;">
-                Track Your Order Status
+                Track Live Order Status
               </a>
             </div>
-
-            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0 20px;" />
-            <p style="color: #999; font-size: 12px; text-align: center; margin: 0;">
-              If you have any questions, reply directly to this email or contact us. Thank you for shopping with Daisy!
-            </p>
           </div>
         </div>
       `
@@ -209,11 +216,9 @@ export async function sendOrderNotifications(params: OrderNotificationParams) {
 
   // Customer SMS
   if (customerPhone) {
-    const customerSmsText = `Daisy Store: Hi ${customerName}, your order #${shortOrderId} for ₹${totalAmount} (${paymentMethod === 'COD' ? 'Cash on Delivery' : 'UPI'}) has been placed successfully! Track at: ${siteUrl}/track`
+    const customerSmsText = `Daisy Store: Hi ${customerName}, your order #${shortOrderId} for ₹${totalAmount} (${paymentMethod}) has been placed successfully! Track at: ${siteUrl}/track`
     await sendSmsNotification(customerPhone, customerSmsText)
   }
-
-  // ─── 2. SEND ADMIN NOTIFICATIONS ───────────────────────────────────────────
 
   // Admin Email
   if (transporter && adminEmail) {
@@ -233,20 +238,6 @@ export async function sendOrderNotifications(params: OrderNotificationParams) {
               <p style="margin: 2px 0; font-size: 15px;"><strong>Payment Method:</strong> ${paymentMethod}</p>
               <p style="margin: 2px 0; font-size: 16px; color: #b2589a;"><strong>Total Amount: ₹${totalAmount}</strong></p>
             </div>
-
-            <h4 style="margin: 0 0 10px; color: #4a2040;">Ordered Items:</h4>
-            <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #444; margin-bottom: 20px;">
-              <thead>
-                <tr style="background: #f0e2ed; color: #4a2040;">
-                  <th style="padding: 8px 12px; text-align: left;">Item</th>
-                  <th style="padding: 8px 12px; text-align: center;">Qty</th>
-                  <th style="padding: 8px 12px; text-align: right;">Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${itemsListHtml}
-              </tbody>
-            </table>
 
             <div style="text-align: center; margin-top: 25px;">
               <a href="${siteUrl}/admin/orders" style="display: inline-block; background: #4a2040; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 14px;">
@@ -273,5 +264,165 @@ export async function sendOrderNotifications(params: OrderNotificationParams) {
   if (adminPhone) {
     const adminSmsText = `Daisy Alert: New order #${shortOrderId} received from ${customerName} for ₹${totalAmount} (${paymentMethod}). Items: ${itemsSummaryText}. Check admin panel!`
     await sendSmsNotification(adminPhone, adminSmsText)
+  }
+}
+
+/**
+ * 2. Sends status update email to Customer when order state changes (Paid, Shipped, Delivered, Rejected)
+ */
+export async function sendOrderStatusUpdateNotification(params: StatusUpdateParams) {
+  const {
+    orderId,
+    customerName,
+    customerEmail,
+    customerPhone,
+    status,
+    totalAmount
+  } = params
+
+  const shortOrderId = orderId.slice(0, 8).toUpperCase()
+  const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const transporter = getTransporter()
+
+  let statusTitle = `Order Status Update: ${status}`
+  let statusMessage = `Your order #${shortOrderId} status is now: <strong>${status}</strong>.`
+  let badgeColor = '#b2589a'
+
+  if (status === 'Paid') {
+    statusTitle = '💳 Payment Verified & Confirmed'
+    statusMessage = `Great news! Your payment for order #${shortOrderId} has been verified and confirmed. We are packing your accessories for dispatch.`
+    badgeColor = '#27ae60'
+  } else if (status === 'Shipped') {
+    statusTitle = '📦 Your Daisy Order Has Shipped!'
+    statusMessage = `Your order #${shortOrderId} is on its way! It has been dispatched and will arrive at your address in 2-4 business days.`
+    badgeColor = '#2980b9'
+  } else if (status === 'Delivered') {
+    statusTitle = '🎉 Your Order Has Been Delivered!'
+    statusMessage = `Your order #${shortOrderId} has been delivered. We hope you love your new Daisy accessories! 🌸`
+    badgeColor = '#2ecc71'
+  } else if (status === 'Rejected') {
+    statusTitle = '⚠️ Order / Payment Update'
+    statusMessage = `Your order #${shortOrderId} could not be approved or payment verification was unsuccessful. Please contact us if you need help.`
+    badgeColor = '#e74c3c'
+  }
+
+  // Email to Customer
+  if (transporter && customerEmail) {
+    try {
+      const emailHtml = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eedbf0; border-radius: 12px; overflow: hidden; background: #ffffff;">
+          <div style="background: ${badgeColor}; color: #ffffff; padding: 25px 20px; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;">Daisy Store</h1>
+            <p style="margin: 5px 0 0; font-size: 14px; opacity: 0.95;">${statusTitle}</p>
+          </div>
+
+          <div style="padding: 30px 25px;">
+            <h2 style="color: #4a2040; margin-top: 0; font-size: 20px;">Hi ${customerName},</h2>
+            <p style="color: #555; font-size: 15px; line-height: 1.6;">
+              ${statusMessage}
+            </p>
+
+            <div style="background: #faf4f9; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: center;">
+              <span style="font-size: 13px; color: #888; display: block; margin-bottom: 4px;">Order ID</span>
+              <strong style="font-family: monospace; font-size: 18px; color: #4a2040;">#${shortOrderId}</strong>
+              <div style="margin-top: 10px;">
+                <span style="background: ${badgeColor}; color: #fff; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 13px;">
+                  ${status}
+                </span>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${siteUrl}/track" style="display: inline-block; background: #b2589a; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 25px; font-weight: bold; font-size: 14px;">
+                View Live Tracking Timeline
+              </a>
+            </div>
+          </div>
+        </div>
+      `
+
+      await transporter.sendMail({
+        from: `"Daisy Store" <${process.env.SMTP_EMAIL}>`,
+        to: customerEmail,
+        subject: `${statusTitle} - #${shortOrderId}`,
+        html: emailHtml
+      })
+      console.log(`[Email] Status update email sent to customer ${customerEmail}`)
+    } catch (err) {
+      console.error('[Email Error] Failed to send status update email:', err)
+    }
+  }
+
+  // SMS to Customer
+  if (customerPhone) {
+    const smsText = `Daisy Store: Hi ${customerName}, your order #${shortOrderId} is now "${status}". Track live: ${siteUrl}/track`
+    await sendSmsNotification(customerPhone, smsText)
+  }
+}
+
+/**
+ * 3. Sends notification when customer submits UTR payment reference
+ */
+export async function sendPaymentSubmittedNotification(params: PaymentSubmittedParams) {
+  const { orderId, customerName, customerEmail, customerPhone, utrNumber, totalAmount } = params
+  const shortOrderId = orderId.slice(0, 8).toUpperCase()
+  const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_EMAIL || 'admin@daisy.com'
+  const transporter = getTransporter()
+
+  // Email to Customer
+  if (transporter && customerEmail) {
+    try {
+      const custHtml = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eedbf0; border-radius: 12px; overflow: hidden; background: #ffffff;">
+          <div style="background: #8e44ad; color: #ffffff; padding: 20px; text-align: center;">
+            <h2 style="margin: 0; font-size: 22px;">Payment Under Review</h2>
+            <p style="margin: 5px 0 0; font-size: 13px;">Order #${shortOrderId}</p>
+          </div>
+          <div style="padding: 25px;">
+            <p>Hi <strong>${customerName}</strong>,</p>
+            <p>We received your payment reference <strong>UTR: ${utrNumber}</strong> for Order #${shortOrderId} (₹${totalAmount}). Our team will verify and dispatch your order shortly.</p>
+          </div>
+        </div>
+      `
+      await transporter.sendMail({
+        from: `"Daisy Store" <${process.env.SMTP_EMAIL}>`,
+        to: customerEmail,
+        subject: `💳 Payment Submitted for #${shortOrderId} - Daisy Store`,
+        html: custHtml
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  // Email to Admin
+  if (transporter && adminEmail) {
+    try {
+      const adminHtml = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eedbf0; border-radius: 12px; overflow: hidden; background: #ffffff;">
+          <div style="background: #8e44ad; color: #ffffff; padding: 20px; text-align: center;">
+            <h2 style="margin: 0; font-size: 22px;">🔍 Payment Verification Needed</h2>
+            <p style="margin: 5px 0 0; font-size: 13px;">UTR Submitted for #${shortOrderId}</p>
+          </div>
+          <div style="padding: 25px;">
+            <p>Customer <strong>${customerName}</strong> has submitted UTR: <strong style="font-family:monospace; font-size:16px;">${utrNumber}</strong> for Order #${shortOrderId} (₹${totalAmount}).</p>
+            <div style="text-align: center; margin-top: 20px;">
+              <a href="${siteUrl}/admin/orders" style="display: inline-block; background: #8e44ad; color: #fff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+                Review in Admin Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      `
+      await transporter.sendMail({
+        from: `"Daisy Store Notifications" <${process.env.SMTP_EMAIL}>`,
+        to: adminEmail,
+        subject: `🔔 [Payment Check] UTR ${utrNumber} for Order #${shortOrderId} - ₹${totalAmount}`,
+        html: adminHtml
+      })
+    } catch (e) {
+      console.error(e)
+    }
   }
 }
